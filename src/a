@@ -1,0 +1,33 @@
+<template>
+  <div class="home-container">
+    <md-bill title="丰旺小麻辣烫" no="12345689" water-mark="智慧孝丰">
+      <md-detail-item title="营业执照名称">丰旺麻辣烫有限公司</md-detail-item>
+      <md-detail-item title="社会信用代码">91330105MA2FEJ858</md-detail-item>
+      <md-detail-item title="经营者姓名">张三</md-detail-item>
+      <md-detail-item title="联系电话">13456789046</md-detail-item>
+      <md-detail-item title="还款">
+        <md-tag
+          size="small"
+          shape="fillet"
+          type="fill"
+          fill-color="#858B9C"
+          style="margin-right:4px;"
+        >首次</md-tag>&yen;404.50&nbsp;(9月22日)
+      </md-detail-item>
+    </md-bill>
+  </div>
+</template>
+
+<script>
+import { Bill, DetailItem, Icon, Tag } from 'mand-mobile'
+
+export default {
+  name: 'bill-demo',
+  components: {
+    [Bill.name]: Bill,
+    [DetailItem.name]: DetailItem,
+    [Icon.name]: Icon,
+    [Tag.name]: Tag
+  }
+}
+</script>
