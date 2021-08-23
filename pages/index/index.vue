@@ -1,5 +1,7 @@
 <template>
-	<view class="content">
+	<view class="home">
+		<u-image :src="bannerSrc" mode="widthFix" :lazy-load="true"></u-image>
+		<view class="content">
 		<view class="banner">
 			<view class="shop-header">
 				<view class="top-info">
@@ -12,10 +14,10 @@
 				<vue-qr :text="shop.qrCode" class="logo" colorDark="green" colorLight="#fff" :logoSrc="logoSrc"
 					:margin="0"></vue-qr>
 			</view>
-			<view class="image-list">
-				<u-image :src="item" mode="widthFix" v-for="(item,index) in shop.blPath" :key="index" :lazy-load="true"
-					@click="imgListPreview(item)"></u-image>
-			</view>
+			<scroll-view scroll-x class="image-list">
+				<image :src="item" mode="widthFix" v-for="(item,index) in shop.blPath" :key="index" :lazy-load="true"
+					@click="imgListPreview(item)" class="scroll-view-item"></image>
+			</scroll-view>
 		</view>
 		<view class="home-body">
 			<u-cell-group title="商家信息" :border="false" :title-style="titleStyle">
@@ -37,7 +39,7 @@
 			<comment />
 		</view>
 	</view>
-
+	</view>
 </template>
 <script>
 	import vueQr from 'vue-qr'
@@ -50,16 +52,17 @@
 		data() {
 			return {
 				logoSrc: require('../../static/logo.png'),
+				bannerSrc: require('../../static/banner.png'),
 				titleStyle: {
 					'font-size': '30rpx',
 					'font-weight': 'bold',
-					'color': '#000'
+					'color': '#2F2F2F'
 				},
 				subTitleStyle: {
 					'width': '240rpx'
 				},
 				iconStyle: {
-					'color': '#2B85E4'
+					'color': '#3296FA'
 				},
 				noIconTitleStyle: {
 					'padding-left': '40rpx'
@@ -69,7 +72,7 @@
 					mType: ['水果店', '餐饮服务'], // 服务类型
 					address: '浙江省杭州市余杭区良渚街道金家渡中苑35-1', // 商户地址
 					bussinessLicense: 1, //营业执照 1有2无3过期
-					blPath: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg'], // 营业执照照片
+					blPath: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg', '/static/shop.jpg'], // 营业执照照片
 					blName: '', // 营业执照名称
 					blCode: '', // 社会信用代码
 					operators_name: '', // 经营者姓名
@@ -103,21 +106,21 @@
 		align-items: center;
 		justify-content: center;
 		width: 100%;
-		padding: 0 18rpx;
-		color: #030133;
-
+		margin-top: -160rpx;
+		padding: 0 16rpx;
+		background-color: #3296FA;
 		.banner {
-			margin: 180rpx 0 18rpx;
+			margin-bottom: 24rpx;
 			padding: 32rpx;
 			background: #fff;
 			border-radius: 12rpx;
-
+			z-index: 99;
 			.shop-header {
 				display: flex;
 				justify-content: space-between;
-
+				gap: 40rpx;
 				.top-title {
-					font-size: 32rpx;
+					font-size: 40rpx;
 					color: #000;
 					font-weight: bold;
 				}
@@ -127,7 +130,7 @@
 					align-items: end;
 					justify-content: flex-start;
 					margin-top: 32rpx;
-					font-size: 24rpx;
+					font-size: 28rpx;
 					color: #303133
 				}
 
@@ -138,10 +141,20 @@
 			}
 
 			.image-list {
-				display: flex;
-				justify-content: space-between;
-				margin-top: 24rpx;
-				gap: 24rpx;
+				// display: flex;
+				// justify-content: space-between;
+				// gap: 8rpx;
+				margin-top: 20rpx;
+				width: 100%;
+				white-space: nowrap;
+				width: 654rpx;
+				overflow: hidden;
+				image {
+					display:inline-block;
+					width: 190rpx;
+					height: 136rpx;
+					margin-right: 8rpx;
+				}
 			}
 		}
 
@@ -155,15 +168,16 @@
 			.u-cell {
 				padding: 20rpx 32rpx;
 				align-items: end;
-				color: #030133;
+				color: #2F2F2F;
 			}
 
 			.tag-wrapper {
 				text-align: right;
 
 				.type-tag {
-					margin: 0 0 8rpx 8rpx;
-					color: #303133;
+					margin: 0 0 12rpx 8rpx;
+					color: #2F2F2F;
+					border: 2rpx solid #D5D5D5;
 				}
 			}
 
@@ -171,7 +185,7 @@
 
 		.sub-title {
 			font-size: 30rpx;
-			color: #000;
+			color: #2F2F2F;
 			font-weight: bold;
 		}
 
