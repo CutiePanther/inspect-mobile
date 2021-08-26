@@ -15,4 +15,5 @@
 <style lang="scss">
 	@import "uview-ui/index.scss";
 	@import "./common/default.scss";
+	@import "./common/iconfont.css";
 </style>

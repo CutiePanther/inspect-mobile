@@ -51,8 +51,8 @@
 		},
 		data() {
 			return {
-				logoSrc: require('../../static/logo.png'),
-				bannerSrc: require('../../static/banner.png'),
+				logoSrc: require('../../static/img/logo.png'),
+				bannerSrc: require('../../static/img/banner.png'),
 				titleStyle: {
 					'font-size': '30rpx',
 					'font-weight': 'bold',
@@ -127,7 +127,7 @@
 
 				.top-address {
 					display: flex;
-					align-items: end;
+					align-items: flex-end;
 					justify-content: flex-start;
 					margin-top: 32rpx;
 					font-size: 28rpx;
@@ -167,7 +167,7 @@
 
 			.u-cell {
 				padding: 20rpx 32rpx;
-				align-items: end;
+				align-items: flex-end;
 				color: #2F2F2F;
 			}
 

@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<u-cell-group class="record-wrap">
-			<u-cell-item v-for="(item, index) in recordList" :title="item.title" :label="item.result" class="u-m-b-20" bg-color="#fff">
+			<u-cell-item v-for="(item, index) in recordList" :key="index" :title="item.title" :label="item.result" class="u-m-b-20" bg-color="#fff">
 				<view slot="icon" class="circle"></view>
 				<view slot="right-icon" class="person">
 					<u-icon name="server-man" color="#2979ff" size="28"></u-icon>执法队员：{{item.person}}
@@ -43,7 +43,12 @@
 			
 		},
 		methods: {
-			
+			getRecordList () {
+				let params = {}
+				this.$u.api.getRecordList(params).then(res => {
+					console.log(res)
+				})
+			}
 		}
 	}
 </script>

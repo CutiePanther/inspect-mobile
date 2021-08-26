@@ -12,6 +12,7 @@
 		}"
 		@tap.stop="inputClick"
 	>
+		<slot></slot>
 		<textarea
 			v-if="type == 'textarea'"
 			class="u-input__input u-input__textarea"
