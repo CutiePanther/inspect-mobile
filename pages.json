@@ -11,6 +11,14 @@
 			}
 		},
 		{
+			"path": "pages/shop/detail",
+			"style": {
+				"navigationBarBackgroundColor": "#EDEDED",
+				"navigationBarTitleText": "编辑商户",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
 			"path": "pages/patrol/index",
 			"style": {
 				"navigationBarBackgroundColor": "#EDEDED",
