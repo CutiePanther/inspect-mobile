@@ -7,7 +7,7 @@
 				<view class="top-info">
 					<view class="top-title">{{shop.mSignName}}</view>
 					<view class="top-address">
-						<u-icon name="map" color="#2d8cf0" size="36"></u-icon>
+						<u-icon name="w-location" custom-prefix="custom-icon" color="#2d8cf0" size="36"></u-icon>
 						<view>{{shop.address}}</view>
 					</view>
 				</view>
@@ -83,8 +83,13 @@
 				}
 			}
 		},
-		onLoad() {
-
+		onLoad(option) {
+			const { id } = option
+			if (id) {
+				this.$u.api.getShopInfo(option.id).then(res => {
+					console.log(res)
+				})
+			}
 		},
 		methods: {
 			imgListPreview(item) {

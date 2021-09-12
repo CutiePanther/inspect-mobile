@@ -8,7 +8,7 @@
     /* 5+App特有相关 */
     "app-plus" : {
         "usingComponents" : true,
-		"nvueStyleCompiler" : "uni-app",
+        "nvueStyleCompiler" : "uni-app",
         "compilerVersion" : 3,
         "splashscreen" : {
             "alwaysShowBeforeRender" : true,
@@ -65,7 +65,37 @@
     "mp-toutiao" : {
         "usingComponents" : true
     },
-    "uniStatistics": {  
-        "enable": false
+    "uniStatistics" : {
+        "enable" : false
+    },
+    "h5" : {
+        "devServer" : {
+            "port" : 4399,
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/" : {
+                    "target" : "http://123.153.1.134:4399",
+                    "changeOrigin" : true,
+                    "secure" : false,
+                    "pathRewrite" : {
+                        "^/" : ""
+                    }
+                }
+            },
+            "https" : false
+        },
+        "title" : "孝城码",
+        "router" : {
+            "mode" : "hash",
+            "base" : "/h5"
+        },
+        "optimization" : {
+            "treeShaking" : {
+                "enable" : true
+            }
+        },
+        "domain" : "http://123.153.1.134"
     }
 }
+// "pathRewrite":{"^/":""}
+

@@ -51,7 +51,7 @@ uni-page-body {
 	justify-content: space-between;
 	font-size: 28rpx;
 	background-size: cover;
-	background-image: url(../../static/img/login.png);
+	background: url(../../static/img/login.png);
 	.content{
 		.logo {
 			display: block;
