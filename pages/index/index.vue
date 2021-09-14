@@ -97,7 +97,6 @@
 		},
 		async onLoad(option) {
 			const dic = await this.$u.api.getDirectory()
-			debugger
 			const typeMap = dic['02']
 			const areaMap = dic['03']
 			const {
@@ -119,6 +118,7 @@
 					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
 					status: 0
 				}
+				uni.setStorageSync('id', id) // 存储商户id
 				this.shop = {
 					...this.shop,
 					...shop,

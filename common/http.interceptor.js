@@ -13,7 +13,7 @@ const install = (Vue, vm) => {
 	});
 	// 请求拦截，配置Token等参数
 	Vue.prototype.$u.http.interceptor.request = (config) => {
-		config.header.Token = 'xxxxxx';
+		config.header.userInfo = uni.getStorageSync('userInfo');
 		
 		// 方式一，存放在vuex的token，假设使用了uView封装的vuex方式，见：https://uviewui.com/components/globalVariable.html
 		// config.header.token = vm.token;
@@ -37,7 +37,11 @@ const install = (Vue, vm) => {
 		if(res.code == 200) {
 			// 如果把originalData设置为了true，这里return回什么，this.$u.post的then回调中就会得到什么
 			return res.data;  
-		} else return false;
+		} else {
+			// 400 用户名密码错误
+			vm.$u.toast(res.errMsg);
+			return false;
+		}
 	}
 }
 

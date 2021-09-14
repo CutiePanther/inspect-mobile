@@ -2,7 +2,7 @@
 	<view class="wrap">
 		<view class="content">
 			<image class="logo" src="../../static/img/logo.png" mode="widthFix"></image>
-			<u-input class="login-item" type="number" v-model="telephone" placeholder="请输入手机号" height="100" :focus="true">
+			<u-input class="login-item" type="number" v-model="userName" placeholder="请输入手机号" height="100" :focus="true">
 				<u-icon name="user" custom-prefix="custom-icon" class="login-icon"></u-icon>
 			</u-input>
 			<u-input class="login-item" type="password" v-model="password" placeholder="请输入密码" :password-icon="true" height="100">
@@ -22,18 +22,23 @@
 export default {
 	data() {
 		return {
-			telephone: '',
+			userName: '',
 			password: ''
 		}
 	},
 
 	methods: {
 		submit() {
-			debugger
-			if(!this.$u.test.mobile(this.telephone)) {
+			if(!this.$u.test.mobile(this.userName)) {
 				this.$u.toast('手机号填写错误')
+				return false
 			}
-			// 获取到用户名密码，然后登录
+			this.$u.api.login({'userName': this.userName, 'password': this.password}).then(res => {
+				console.log(res)
+				const id = uni.getStorageSync('id')
+				uni.setStorageSync('userType', res.userType)
+				this.$u.route('/', { id })
+			})
 		}
 	}
 };

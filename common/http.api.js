@@ -1,15 +1,17 @@
 const url = {
 	getShopInfo: '/merchantInfo/view',
-	getDirectory: '/dic'
+	getDirectory: '/dic',
+	login: 'login'
 }
 
 const install = (Vue, vm) => {
-	let getShopInfo = (id) => vm.$u.get(`${url.getShopInfo}/${id}`);
-	let getDirectory = () => vm.$u.get(url.getDirectory);
-	// 此处使用了传入的params参数，一切自定义即可
-	// let getDirectory = (params = {}) => vm.$u.post(indexUrl, params);
+	let api = {
+		getShopInfo: (id) => vm.$u.get(`${url.getShopInfo}/${id}`),
+		getDirectory: () => vm.$u.get(url.getDirectory),
+		login: (params) => vm.$u.post(url.login, params)
+	}
 	
-	vm.$u.api = { getShopInfo, getDirectory };
+	vm.$u.api = api;
 }
 
 export default {
