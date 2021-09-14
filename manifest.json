@@ -84,6 +84,9 @@
             },
             "https" : false
         },
+		"uniStatistics": {
+			"enable": true 
+		},
         "title" : "孝城码",
         "router" : {
             "mode" : "hash",

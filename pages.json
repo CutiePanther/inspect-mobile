@@ -6,14 +6,15 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarBackgroundColor": "#EDEDED",
-				"navigationBarTitleText": "商户主页"
+				"navigationBarTitleText": "商户主页",
+				"navigationStyle": "custom",
+				"scrollIndicator": "none",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
 			"path": "pages/shop/detail",
 			"style": {
-				"navigationBarBackgroundColor": "#EDEDED",
 				"navigationBarTitleText": "编辑商户",
 				"enablePullDownRefresh": false
 			}
@@ -21,7 +22,6 @@
 		{
 			"path": "pages/patrol/index",
 			"style": {
-				"navigationBarBackgroundColor": "#EDEDED",
 				"navigationBarTitleText": "巡查上报",
 				"enablePullDownRefresh": false
 			}
@@ -29,7 +29,6 @@
 		{
 			"path": "pages/patrol/detail",
 			"style": {
-				"navigationBarBackgroundColor": "#EDEDED",
 				"navigationBarTitleText": "巡查详情",
 				"enablePullDownRefresh": false
 			}
@@ -37,7 +36,6 @@
 		{
 			"path": "pages/record/index",
 			"style": {
-				"navigationBarBackgroundColor": "#EDEDED",
 				"navigationBarTitleText": "巡查记录",
 				"enablePullDownRefresh": true
 			}
@@ -45,8 +43,9 @@
 		{
 			"path": "pages/login/index",
 			"style": {
+				"navigationStyle": "custom",
 				"navigationBarTitleText": "登录",
-				"navigationBarBackgroundColor": "#EDEDED"
+				"enablePullDownRefresh": false
 			}
 		},
 		{
@@ -58,7 +57,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "孝城码",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}

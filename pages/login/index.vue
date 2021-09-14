@@ -12,7 +12,7 @@
 		</view>
 		<view class="buttom">
 			<view class="hint">
-				孝城信息管理系统
+				孝城码信息管理系统
 			</view>
 		</view>
 	</view>
