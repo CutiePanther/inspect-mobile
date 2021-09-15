@@ -1,7 +1,7 @@
 <template>
 	<view class="home">
 		<u-image :src="bannerSrc" mode="widthFix" :lazy-load="true"></u-image>
-		<view class="login-btn" @tap="link2login">
+		<view class="login-btn" @tap="link2login" v-if="!userType">
 			<u-icon name="user" custom-prefix="custom-icon" class="login-icon"></u-icon>登录
 		</view>
 		<view class="content">
@@ -51,7 +51,12 @@
 					</u-cell-item>
 				</u-cell-group>
 			</view>
-			<view class="home-footer">
+			<view class="operate-wrapper">
+				<u-button v-if="userType!=0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
+				<u-button v-if="userType==1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
+				<u-button v-if="userType==2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
+			</view>
+			<view v-if="!userType" class="home-footer">
 				<comment />
 			</view>
 		</view>
@@ -77,9 +82,10 @@
 				noIconTitleStyle: {
 					'padding-left': '40rpx'
 				},
+				userType: '',
 				shop: {
 					MSignName: '', // 商户名称
-					MType: '餐饮服务', // 服务类型
+					MType: '', // 服务类型
 					address: '', // 商户地址
 					bussinessLicense: 1, //营业执照 1有2无3过期
 					blPath: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg',
@@ -99,28 +105,17 @@
 			const dic = await this.$u.api.getDirectory()
 			const typeMap = dic['02']
 			const areaMap = dic['03']
-			const {
-				id
-			} = option
+			const { id } = option
+			this.userType = uni.getStorageSync('userType') // 判断登录状态
+			console.log('userType', this.userType)
+			uni.setStorageSync('typeMap', typeMap)
+			uni.setStorageSync('areaMap', areaMap)
 			if (id) {
 				let shop = await this.$u.api.getShopInfo(option.id)
-				let orign = {
-					MSignName: '',
-					MType: '',
-					address: '',
-					bussinessLicense: 1,
-					blPath: '',
-					blName: '',
-					blCode: '',
-					operatorsName: '',
-					phone: '',
-					area: '',
-					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
-					status: 0
-				}
 				uni.setStorageSync('id', id) // 存储商户id
 				this.shop = {
 					...this.shop,
+					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
 					...shop,
 					MType: typeMap[shop.MType],
 					area: areaMap[shop.area]
@@ -139,6 +134,15 @@
 			link2login(e) {
 				console.log(e)
 				this.$u.route('pages/login/index')
+			},
+			link2record(e) {
+				this.$u.route('pages/record/index')
+			},
+			link2modify(e) {
+				this.$u.route('pages/shop/modify')
+			},
+			link2patrol(e) {
+				this.$u.route('pages/patrol/index')
 			}
 		}
 	}
@@ -237,7 +241,12 @@
 				color: #3296FA;
 			}
 		}
-
+		.operate-wrapper {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+			margin: 48rpx 0;
+		}
 		.home-body,
 		.home-footer {
 			width: 100%;

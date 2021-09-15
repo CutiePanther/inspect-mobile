@@ -13,7 +13,7 @@
 			}
 		},
 		{
-			"path": "pages/shop/detail",
+			"path": "pages/shop/modify",
 			"style": {
 				"navigationBarTitleText": "编辑商户",
 				"enablePullDownRefresh": false
@@ -59,6 +59,8 @@
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "孝城码",
 		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"navigationStyle": "custom",
+		"scrollIndicator": "none"
 	}
 }
