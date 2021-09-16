@@ -4,6 +4,9 @@
 		<view class="login-btn" @tap="link2login" v-if="!userType">
 			<u-icon name="user" custom-prefix="custom-icon" class="login-icon"></u-icon>登录
 		</view>
+		<view class="login-btn" @tap="logout" v-if="userType">
+			<u-icon name="user" custom-prefix="custom-icon" class="login-icon"></u-icon>登出
+		</view>
 		<view class="content">
 			<view class="banner">
 				<view class="shop-header">
@@ -51,13 +54,13 @@
 					</u-cell-item>
 				</u-cell-group>
 			</view>
+			<view v-if="!userType" class="home-footer">
+				<comment />
+			</view>
 			<view class="operate-wrapper">
 				<u-button v-if="userType!=0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
 				<u-button v-if="userType==1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
 				<u-button v-if="userType==2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
-			</view>
-			<view v-if="!userType" class="home-footer">
-				<comment />
 			</view>
 		</view>
 	</view>
@@ -113,6 +116,7 @@
 			if (id) {
 				let shop = await this.$u.api.getShopInfo(option.id)
 				uni.setStorageSync('id', id) // 存储商户id
+				this.id = id
 				this.shop = {
 					...this.shop,
 					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
@@ -134,6 +138,15 @@
 			link2login(e) {
 				console.log(e)
 				this.$u.route('pages/login/index')
+			},
+			logout(e) {
+				console.log(e)
+				this.$u.api.logout().then(res => {
+					console.log(res)
+					uni.clearStorageSync()
+					let id = 
+					this.$u.route({url:'/', type: 'reLaunch',params: {id: this.id}})
+				})
 			},
 			link2record(e) {
 				this.$u.route('pages/record/index')

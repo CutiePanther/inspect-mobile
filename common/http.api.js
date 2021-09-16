@@ -1,8 +1,11 @@
 const install = (Vue, vm) => {
 	let api = {
 		getShopInfo: (id) => vm.$u.get(`/merchantInfo/view/${id}`),
+		modifyShopInfo: (params) => vm.$u.post('/merchantInfo/update', params),
 		getDirectory: () => vm.$u.get('/dic'),
-		login: (params) => vm.$u.post('/login', params)
+		login: (params) => vm.$u.post('/login', params),
+		logout: (params) => vm.$u.get('/exit', params),
+		getRecordList: (params) => vm.$u.get('/patrolInfo/page', params)
 	}
 	
 	vm.$u.api = api;

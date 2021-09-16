@@ -20,13 +20,22 @@
 					class="formList" prop="blName">
 					<u-input v-model="form.blName" maxlength="50" :clearable="true" />
 				</u-form-item>
+				<u-form-item required v-if="form.businessLicense === 1" label="统一社会信用码" label-width="auto"
+					class="formList" prop="blCode">
+					<u-input v-model="form.blCode" maxlength="50" :clearable="true" />
+				</u-form-item>
+				<u-form-item v-if="form.businessLicense === 1" class="formList" label="营业执照" prop="photo"
+					label-width="auto">
+					<u-upload ref="blUpload" :action="action" max-count="3" width="160" height="160"
+						:limitType="['jpg']"></u-upload>
+				</u-form-item>
 				<u-form-item required label="经营范围" label-width="auto" class="formList" right-icon="arrow-right"
 					prop="MType">
-					<u-input v-model="form.MType" :disabled="true" @tap="showSelect('mType')" />
+					<u-input v-model="form.MTypeStr" :disabled="true" @tap="showSelect('MType')" />
 				</u-form-item>
 				<u-form-item required label="经营场所面积" label-width="auto" class="formList" right-icon="arrow-right"
 					prop="area">
-					<u-input v-model="form.area" :disabled="true" @tap="showSelect('area')" />
+					<u-input v-model="form.areaStr" :disabled="true" @tap="showSelect('area')" />
 				</u-form-item>
 				<u-form-item required label="经营者姓名" label-width="auto" class="formList" prop="operatorsName">
 					<u-input v-model="form.operatorsName" maxlength="32" :clearable="true" />
@@ -34,9 +43,14 @@
 				<u-form-item required label="联系电话" label-width="auto" class="formList" prop="phone">
 					<u-input v-model="form.phone" maxlength="11" :clearable="true" />
 				</u-form-item>
+				<u-form-item class="formList" label="店铺照片" prop="photo" label-width="auto">
+					<u-upload ref="shopUpload" :action="action" max-count="5" width="160" height="160"
+						:limitType="['jpg']"></u-upload>
+				</u-form-item>
+
 			</u-cell-group>
 		</u-form>
-		<u-select v-model="selectView" :list="array" @confirm="selectConfirm"></u-select>
+		<u-select v-model="selectView" :list="optionArray" @confirm="selectConfirm"></u-select>
 		<view class="footer">
 			<u-button type="primary" :ripple="true" shape="circle" @tap="submit">提交</u-button>
 		</view>
@@ -48,7 +62,7 @@
 	export default {
 		data() {
 			return {
-				array: [],
+				optionArray: [],
 				shopId: '',
 				selectType: '',
 				selectView: false,
@@ -59,11 +73,13 @@
 					businessLicense: 1,
 					blPath: '', // 营业执照照片
 					blName: '小葡萄的小店', // 营业执照名称
-					blCode: '小葡萄的小店', // 社会统一信用码
+					blCode: '330523604009696', // 社会统一信用码
 					operatorName: '李永', // 经营者姓名
 					phone: '13588658888', // 联系方式
-					area: 20, // 经营面积
-					mPaths: '' // 商铺实景图
+					area: '', // 经营面积
+					mPaths: '', // 商铺实景图
+					MTypeStr: '',
+					areaStr: ''
 				},
 				formOption: {
 					MType: [],
@@ -89,7 +105,10 @@
 						required: true,
 						message: '请输入经营面积'
 					}]
-				}
+				},
+				action: '/pic/uploadPic', // 演示地址
+				showUploadList: false,
+				fileList: []
 			}
 		},
 		async onLoad() {
@@ -129,20 +148,13 @@
 			}
 		},
 		methods: {
-			getShopDetail(id) {
-				this.$u.api.getInfo({
-					id
-				}).then(res => {
-					console.log(res)
-				})
-			},
 			getOptions() {
-				let MTypeMap = uni.getStorageSync('MType')
-				let areaMap = uni.getStorageSync('area')
-				let MType = Object.keys(MTypeMap).map((v, index) => {
+				let typeMap = uni.getStorageSync('typeMap')
+				let areaMap = uni.getStorageSync('areaMap')
+				let MType = Object.keys(typeMap).map((v, index) => {
 					return {
 						value: v,
-						label: MTypeMap[v]
+						label: typeMap[v]
 					}
 				})
 				let area = Object.keys(areaMap).map((v, index) => {
@@ -151,6 +163,9 @@
 						label: areaMap[v]
 					}
 				})
+				// 初始化绑定值
+				this.form.MTypeStr = typeMap[this.form.MType]
+				this.form.areaStr = areaMap[this.form.area]
 				this.formOption = {
 					MType,
 					area
@@ -158,7 +173,7 @@
 			},
 			showSelect(type) {
 				this.selectType = type
-				this.arr = this.formOption[type]
+				this.optionArray = this.formOption[type]
 				this.selectView = true
 			},
 			selectConfirm(val) {
@@ -166,17 +181,41 @@
 				this.form[`${this.selectType}Str`] = val[0].label
 			},
 			submit() {
-				this.$ref.uForm.validate(vaild => {
+				let blList = this.$refs.blUpload.lists
+				let shopList = this.$refs.shopUpload.lists
+				let blPath = []
+				let mPaths = []
+				const id = uni.getStorageSync('id')
+				blList.forEach(item => {
+					blPath.push(item.response.data)
+				})
+				shopList.forEach(item => {
+					mPaths.push(item.response.data)
+				})
+				console.info('营业执照', blPath)
+				this.$refs.uForm.validate(vaild => {
 					if (vaild) {
 						let params = {
+							id,
 							...this.form,
-							id: '1',
-							userId: '1'
+							blPath,
+							mPaths
 						}
-						this.$u.api.modifyShopInfo(params).then(res => {
-							this.$u.toast('编辑成功')
-							util.backRouter(this)
-						})
+						console.info('params', params)
+						// 接口404 先模拟跳转
+						this.$u.toast('编辑成功')
+						setTimeout(
+							() => this.$u.route({
+								url: '/',
+								type: 'reLaunch',
+								params: {
+									id
+								}
+							}), 2000)
+						// this.$u.api.modifyShopInfo(params).then(res => {
+						// 	this.$u.toast('编辑成功')
+						// 	util.backRouter(this)
+						// })
 					}
 				})
 			}
@@ -190,11 +229,11 @@
 <style lang="scss" scoped>
 	.modify {
 		.footer {
-			position: fixed;
-			bottom: 0;
-			left: 0;
+			// position: fixed;
+			// bottom: 0;
+			// left: 0;
 			width: 100%;
-			padding: 20rpx 40rpx;
+			padding: 64rpx 40rpx;
 			text-align: center;
 		}
 
@@ -216,7 +255,7 @@
 		}
 
 		.formView {
-			margin-bottom: 116rpx;
+			// margin-bottom: 48rpx;
 		}
 	}
 </style>

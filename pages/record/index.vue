@@ -1,10 +1,10 @@
 <template>
 	<view class="content">
 		<u-cell-group class="record-wrap">
-			<u-cell-item v-for="(item, index) in recordList" :key="index" :title="item.title" :label="item.result" class="u-m-b-20" bg-color="#fff">
+			<u-cell-item v-for="(item, index) in recordList" :key="index" :title="item.createTime" :label="item.info" class="u-m-b-20" bg-color="#fff" @tap="link2detail(item)">
 				<view slot="icon" class="circle"></view>
 				<view slot="right-icon" class="person">
-					<u-icon name="server-man" color="#2979ff" size="28"></u-icon>执法队员：{{item.person}}
+					<u-icon name="server-man" color="#2979ff" size="28"></u-icon>执法队员：{{item.userId}}
 				</view>
 			</u-cell-item>
 			<view class="empty" v-if="recordList.length === 0">
@@ -20,34 +20,22 @@
 	export default {
 		data() {
 			return {
-				recordList: [
-					{
-						title: '2021-08-22',
-						result: '扣分0，无不合格项',
-						person: '朱小贝'
-					},
-					{
-						title: '2021-08-22',
-						result: '扣分0，无不合格项',
-						person: '朱小贝'
-					},
-					{
-						title: '2021-08-22',
-						result: '扣分0，无不合格项',
-						person: '朱小贝'
-					}
-				]
+				recordList: []
 			}
 		},
 		onLoad() {
-			
+			this.getRecordList()
 		},
 		methods: {
-			getRecordList () {
+			async getRecordList () {
 				let params = {}
-				this.$u.api.getRecordList(params).then(res => {
-					console.log(res)
-				})
+				let res = await this.$u.api.getRecordList()
+				this.recordList = res.pageData
+				console.log(this.recordList)
+			},
+			link2detail(item) {
+				console.log(item)
+				this.$u.route('/pages/patrol/detail', item)
 			}
 		}
 	}
