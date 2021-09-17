@@ -111,7 +111,7 @@
 				fileList: []
 			}
 		},
-		async onLoad() {
+		async onShow() {
 			let id = uni.getStorageSync('id')
 			let shop = await this.$u.api.getShopInfo(id)
 			let orign = {
@@ -205,13 +205,7 @@
 						// 接口404 先模拟跳转
 						this.$u.toast('编辑成功')
 						setTimeout(
-							() => this.$u.route({
-								url: '/',
-								type: 'reLaunch',
-								params: {
-									id
-								}
-							}), 2000)
+							() => this.$u.route('/', { id }), 2000)
 						// this.$u.api.modifyShopInfo(params).then(res => {
 						// 	this.$u.toast('编辑成功')
 						// 	util.backRouter(this)

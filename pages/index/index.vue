@@ -54,13 +54,13 @@
 					</u-cell-item>
 				</u-cell-group>
 			</view>
-			<view v-if="!userType" class="home-footer">
-				<comment />
-			</view>
 			<view class="operate-wrapper">
 				<u-button v-if="userType!=0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
 				<u-button v-if="userType==1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
 				<u-button v-if="userType==2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
+			</view>
+			<view v-if="!userType" class="home-footer">
+				<comment />
 			</view>
 		</view>
 	</view>
@@ -104,17 +104,27 @@
 				}
 			}
 		},
-		async onLoad(option) {
-			const dic = await this.$u.api.getDirectory()
-			const typeMap = dic['02']
-			const areaMap = dic['03']
-			const { id } = option
+		async onShow() {
+			debugger
+			let typeMap = {}
+			let areaMap = {}			
+			if(uni.getStorageSync('typeMap')) {
+				typeMap = uni.getStorageSync('typeMap')
+				areaMap = uni.getStorageSync('areaMap')
+			} else {
+				const dic = await this.$u.api.getDirectory()
+				typeMap = dic['02']
+				areaMap = dic['03']
+				uni.setStorageSync('typeMap', typeMap)
+				uni.setStorageSync('areaMap', areaMap)
+			}
+			let pages = getCurrentPages()
+			let currentPage = pages[pages.length - 1]
+			const { id } = currentPage.options
 			this.userType = uni.getStorageSync('userType') // 判断登录状态
 			console.log('userType', this.userType)
-			uni.setStorageSync('typeMap', typeMap)
-			uni.setStorageSync('areaMap', areaMap)
 			if (id) {
-				let shop = await this.$u.api.getShopInfo(option.id)
+				let shop = await this.$u.api.getShopInfo(id)
 				uni.setStorageSync('id', id) // 存储商户id
 				this.id = id
 				this.shop = {
@@ -143,8 +153,7 @@
 				console.log(e)
 				this.$u.api.logout().then(res => {
 					console.log(res)
-					uni.clearStorageSync()
-					let id = 
+					uni.removeStorageSync('userType') // 清除用户登录状态
 					this.$u.route({url:'/', type: 'reLaunch',params: {id: this.id}})
 				})
 			},
