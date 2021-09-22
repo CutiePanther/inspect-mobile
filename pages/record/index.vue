@@ -7,9 +7,8 @@
 					<u-icon name="server-man" color="#2979ff" size="28"></u-icon>执法队员：{{item.name}}
 				</view>
 			</u-cell-item>
-			<view class="empty" v-if="recordList.length === 0">
-				<!-- <image class="empty-image" src="../../static/empty.png" mode="widthFix"></image> -->
-				<image class="empty-image" src="../../static/shop.jpg" mode="widthFix"></image>
+			<view class="empty" v-show="recordList.length === 0">
+				<image class="empty-image" src="../../static/empty.png" mode="widthFix"></image>
 				<text class="empty-title">无巡查记录</text>
 			</view>
 		</u-cell-group>
@@ -24,19 +23,17 @@
 				recordList: []
 			}
 		},
-		onLoad() {
+		onShow() {
 			this.getRecordList()
 		},
 		methods: {
 			async getRecordList () {
-				let params = {}
 				let res = await this.$u.api.getRecordList()
-				this.recordList = [res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0]]
-				console.log(this.recordList)
+				this.recordList = res.pageData
 			},
 			link2detail(item) {
 				console.log(item)
-				this.$u.route('/pages/patrol/detail', item)
+				this.$u.route('/pages/patrol/detail', {id: item.id})
 			},
 			link2add() {
 				console.log('add')
@@ -80,6 +77,7 @@
 			border: 2rpx solid $u-type-primary;
 		}
 		.empty-image {
+			width: 100%;
 			margin: 0 auto;
 		}
 		.empty-title {

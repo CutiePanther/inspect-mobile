@@ -17,12 +17,12 @@
 							<view>{{shop.address}}</view>
 						</view>
 					</view>
-					<vue-qr :text="shop.qrCode" class="logo" colorDark="green" colorLight="#fff" :logoSrc="logoSrc"
+					<vue-qr :text="shop.qrCode" class="logo" :colorDark="codeColor" colorLight="#fff" :logoSrc="logoSrc"
 						:margin="0"></vue-qr>
 				</view>
 				<scroll-view scroll-x class="image-list">
-					<image :src="item" mode="widthFix" v-for="(item,index) in shop.paths" :key="index"
-						:lazy-load="true" @click="imgListPreview(item)" class="scroll-view-item"></image>
+					<image :src="item" mode="widthFix" v-for="(item,index) in shop.paths" :key="index" :lazy-load="true"
+						@click="imgListPreview(item)" class="scroll-view-item"></image>
 				</scroll-view>
 			</view>
 			<view class="home-body">
@@ -86,11 +86,13 @@
 					'padding-left': '40rpx'
 				},
 				userType: '',
+				codeColor: '', // 二维码颜色 'range'
 				shop: {
 					m_SignName: '', // 商户名称
 					m_Type: '', // 服务类型
 					address: '', // 商户地址
 					bussinessLicense: 1, //营业执照 1有2无3过期
+					inspectionScore: 99,
 					paths: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg',
 						'/static/shop.jpg', '/static/license.jpg', '/static/shop.jpg'
 					], // 营业执照照片
@@ -106,16 +108,20 @@
 		},
 		async onShow() {
 			let typeMap = {}
-			let areaMap = {}			
-			if(uni.getStorageSync('typeMap')) {
+			let areaMap = {}
+			let scoreRange = ''
+			if (uni.getStorageSync('scoreRange')) {
 				typeMap = uni.getStorageSync('typeMap')
 				areaMap = uni.getStorageSync('areaMap')
+				scoreRange = uni.getStorageSync('scoreRange')
 			} else {
 				const dic = await this.$u.api.getDirectory()
 				typeMap = dic['02']
 				areaMap = dic['03']
+				scoreRange = dic['04']['0401']
 				uni.setStorageSync('typeMap', typeMap)
 				uni.setStorageSync('areaMap', areaMap)
+				uni.setStorageSync('scoreRange', scoreRange)
 			}
 			let pages = getCurrentPages()
 			let currentPage = pages[pages.length - 1]
@@ -126,10 +132,11 @@
 				let shop = await this.$u.api.getShopInfo(id)
 				uni.setStorageSync('id', id) // 存储商户id
 				this.id = id
-				if(shop.paths.length) {
-					shop.paths = shop.paths.map(v => { return `http://123.153.1.134:4399/pic/getImageByte/${v}`})
+				this.codeColor = this.computeSocre(shop.inspectionScore, scoreRange)
+				if (shop.paths.length) {
+					// shop.paths = shop.paths.map(v => `${location.origin}/pic/getImageByte/${v}`)
+					shop.paths = shop.paths.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
 				}
-				console.log(shop)
 				this.shop = {
 					...this.shop,
 					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
@@ -140,11 +147,23 @@
 			}
 		},
 		methods: {
+			computeSocre(socre, range) {
+				if (range.length) {
+					let [zore, low, mid, height] = range.split('-')
+					if (socre < low) {
+						return 'red'
+					} else if (socre >= low && socre < mid) {
+						return 'yellow'
+					} else {
+						return 'green'
+					}
+				}
+			},
 			imgListPreview(item) {
 				uni.previewImage({
 					indicator: 'number',
 					loop: 'true',
-					urls: this.shop.blPath,
+					urls: this.shop.paths,
 					current: item
 				})
 			},
@@ -157,7 +176,13 @@
 				this.$u.api.logout().then(res => {
 					console.log(res)
 					uni.removeStorageSync('userType') // 清除用户登录状态
-					this.$u.route({url:'/', type: 'reLaunch',params: {id: this.id}})
+					this.$u.route({
+						url: '/',
+						type: 'reLaunch',
+						params: {
+							id: this.id
+						}
+					})
 				})
 			},
 			link2record(e) {
@@ -266,12 +291,14 @@
 				color: #3296FA;
 			}
 		}
+
 		.operate-wrapper {
 			display: flex;
 			justify-content: space-between;
 			width: 100%;
 			margin: 48rpx 0;
 		}
+
 		.home-body,
 		.home-footer {
 			width: 100%;

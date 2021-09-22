@@ -51,6 +51,72 @@
 	</view>
 </template>
 <script>
+	const countMap = [{
+			category: '包垃圾分类',
+			content: '做好垃圾分类，定时定点规范投放。',
+		},
+		{
+			category: '包秩序井然',
+			content: '维护责任区卫生清洁，车辆规范停放。'
+		},
+		{
+			category: '包立面美观',
+			content: '保持建筑外立面、户外设施完好整洁。'
+		},
+		{
+			category: '包绿化完好',
+			content: '维护责任区树木花草及绿化设施完好。'
+		},
+		{
+			category: '包文明劝导',
+			content: '劝导责任区范围内不文明行为。',
+		},
+		{
+			category: '不乱搭乱建'
+		},
+		{
+			category: '不占道经营'
+		},
+		{
+			category: '不乱贴乱画'
+		},
+		{
+			category: '不乱倒垃圾'
+		},
+		{
+			category: '不乱倒污水'
+		},
+		{
+			category: '不私摆乱放'
+		},
+		{
+			category: '不侵占绿地'
+		},
+		{
+			category: '不沿街晾晒'
+		},
+		{
+			category: '不制造噪音'
+		},
+		{
+			category: '不放养宠物'
+		},
+		{
+			category: '按标准安装油烟净化装置，正常使用油烟净化装置。'
+		},
+		{
+			category: '落实油烟净化装置定期清洗'
+		},
+		{
+			category: '大中型餐饮经营单位，落实第三方清洗制度'
+		},
+		{
+			category: '大中型餐饮经营单位，及时登记相关清洗台账'
+		},
+		{
+			category: '有油烟在线监测系统的，按要求使用'
+		}
+	]
 	export default {
 		data() {
 			return {
@@ -81,141 +147,83 @@
 				//     ]
 				// }
 				detail: {
-					createTime: '2021-08-16',
+					createTime: '2021-09-16',
 					result: '扣分0，无不合格项。',
 					name: '朱小贝',
-					patrols: [{
-							titleName: '五包',
-							info: [{
-									category: '包垃圾分类',
-									content: '做好垃圾分类，定时定点规范投放。',
-									status: 'true',
-									pic: '/static/license.jpg'
-								},
-								{
-									category: '包秩序井然',
-									content: '维护责任区卫生清洁，车辆规范停放。',
-									status: 'true',
-									pic: '/static/license.jpg'
-								},
-								{
-									category: '包立面美观',
-									content: '保持建筑外立面、户外设施完好整洁。',
-									status: 'true',
-									pic: '/static/license.jpg'
-								},
-								{
-									category: '包绿化完好',
-									content: '维护责任区树木花草及绿化设施完好。',
-									status: 'true',
-									pic: '/static/license.jpg'
-								},
-								{
-									category: '包文明劝导',
-									content: '劝导责任区范围内不文明行为。',
-									status: 'true',
-									pic: '/static/license.jpg'
-								}
-							],
-							open: true
-						},
-						{
-							titleName: '十不准',
-							info: [{
-									content: '不乱搭乱建',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不占道经营',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不乱贴乱画',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不乱倒垃圾',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不乱倒污水',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不私摆乱放',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不侵占绿地',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不沿街晾晒',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不制造噪音',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '不放养宠物',
-									status: 'true',
-									pic: []
-								}
-							],
-							open: false
-						},
-						{
-							titleName: '餐饮单位附加要求',
-							info: [{
-									content: '按标准安装油烟净化装置，正常使用油烟净化装置。',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '落实油烟净化装置定期清洗',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '大中型餐饮经营单位，落实第三方清洗制度',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '大中型餐饮经营单位，及时登记相关清洗台账',
-									status: 'true',
-									pic: []
-								},
-								{
-									content: '有油烟在线监测系统的，按要求使用',
-									status: 'true',
-									pic: []
-								}
-							],
-							open: false
-						}
-					]
+					patrols: []
 				}
 			}
 		},
-		onLoad(option) {
-			console.log(option)
-			this.detail = {
-				...option,
-				patrols: this.detail.patrols
-			}
+		onShow() {
+			let pages = getCurrentPages()
+			let currentPage = pages[pages.length - 1]
+			const {
+				id
+			} = currentPage.options
+			this.getRecordDetail(id)
 		},
 		methods: {
+			async getRecordDetail(id) {
+				const detail = await this.$u.api.getRecordDetail(id)
+				// count: 1
+				// errorCode: 0
+				// images: ["729f391c3a7245d0abf2af3fa1468a23", "729f391c3a7245d0abf2af3fa1468a23",…]
+				// mark: 1
+				// outcome: "客户原因造成::现场整改,扣分:0.5"
+				// status: false
+				// titleName: 1
+				let five = [] // 五包
+				let ten = [] // 十不准
+				let additional = [] // 附加选项
+				detail.patrols.forEach(item => {
+					let info = countMap[item.count - 1]
+					let pic = []
+					if (item.images) {
+						pic = item.images.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
+					}
+					let temp = {
+						category: info.category,
+						content: info.content || '',
+						status: item.status ? 'true': 'false',
+						pic,
+						errorCode: item.errorCode,
+						mark: item.mark,
+						outcome: item.outcome || ''
+					}
+					switch (item.titleName) {
+						case 1:
+							five.push(temp)
+							break
+						case 2:
+							ten.push(temp)
+							break
+						case 3:
+							additional.push(temp)
+							break
+						default:
+							break
+					}
+				})
+				this.detail = {
+					...detail,
+					patrols: [{
+						titleName: '五包',
+						info: five,
+						open: true
+					},
+					{
+						titleName: '十不准',
+						info: ten,
+						open: false
+					},
+					{
+						titleName: '餐饮单位附加要求',
+						info: additional,
+						open: false
+					}]
+				}
+				console.log(this.detail)
+			},
 			radioGroupChange(e) {
 				console.log(e)
 				console.log(typeof(e))
