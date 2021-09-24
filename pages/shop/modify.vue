@@ -16,12 +16,10 @@
 						</u-radio>
 					</u-radio-group>
 				</u-form-item>
-				<u-form-item required v-if="form.businessLicense === 1" label="营业执照名称" label-width="auto"
-					class="formList" prop="blName">
+				<u-form-item v-if="form.businessLicense === 1" label="营业执照名称" label-width="auto" class="formList" prop="blName">
 					<u-input v-model="form.blName" maxlength="50" :clearable="true" />
 				</u-form-item>
-				<u-form-item required v-if="form.businessLicense === 1" label="统一社会信用码" label-width="auto"
-					class="formList" prop="blCode">
+				<u-form-item v-if="form.businessLicense === 1" label="统一社会信用码" label-width="auto" class="formList" prop="blCode">
 					<u-input v-model="form.blCode" maxlength="50" :clearable="true" />
 				</u-form-item>
 				<!-- <u-form-item v-if="form.businessLicense === 1" class="formList" label="营业执照" prop="photo"
@@ -37,15 +35,14 @@
 					prop="area">
 					<u-input v-model="form.areaStr" :disabled="true" @tap="showSelect('area')" />
 				</u-form-item>
-				<u-form-item required label="经营者姓名" label-width="auto" class="formList" prop="operatorsName">
+				<u-form-item label="经营者姓名" label-width="auto" class="formList" prop="operatorsName">
 					<u-input v-model="form.operatorsName" maxlength="32" :clearable="true" />
 				</u-form-item>
-				<u-form-item required label="联系电话" label-width="auto" class="formList" prop="phone">
+				<u-form-item label="联系电话" label-width="auto" class="formList" prop="phone">
 					<u-input v-model="form.phone" maxlength="11" :clearable="true" />
 				</u-form-item>
 				<u-form-item class="formList" label="店铺照片" prop="photo" label-width="auto">
-					<u-upload ref="shopUpload" :action="action" max-count="5" width="160" height="160"
-						:limitType="['jpg']"></u-upload>
+					<u-upload ref="shopUpload" :file-list="shopImgList" :action="action" max-count="5" width="160" height="160"></u-upload>
 				</u-form-item>
 
 			</u-cell-group>
@@ -67,17 +64,16 @@
 				selectType: '',
 				selectView: false,
 				form: {
-					m_SignName: '小葡萄的小店', // 商铺名称
-					m_Type: '零售业', // 服务类型
-					address: '浙江省杭州市滨江区滨安路1080号', // 详细地址
-					businessLicense: 1,
-					blPath: '', // 营业执照照片
-					blName: '小葡萄的小店', // 营业执照名称
-					blCode: '330523604009696', // 社会统一信用码
-					operatorName: '李永', // 经营者姓名
-					phone: '13588658888', // 联系方式
+					m_SignName: '', // 商铺名称
+					m_Type: '', // 服务类型
+					address: '', // 详细地址
+					businessLicense: 1, // 营业执照 1有 2无 3过期
+					blName: '', // 营业执照名称
+					blCode: '', // 社会统一信用码
+					operatorName: '', // 经营者姓名
+					phone: '', // 联系方式
 					area: '', // 经营面积
-					mPaths: '', // 商铺实景图
+					paths: '', // 商铺实景图
 					m_TypeStr: '',
 					areaStr: ''
 				},
@@ -87,16 +83,24 @@
 				},
 				radioList: [{
 						name: '有',
-						value: 1,
-						disabled: false
+						value: 1
 					},
 					{
 						name: '无',
-						value: 2,
-						disabled: false
+						value: 2
 					}
 				],
 				rules: {
+					m_SignName: [{
+						required: true,
+						message: '请输入姓名',
+						trigger: 'blur,change'
+					}],
+					address: [{
+						required: true,
+						message: '请输入详细地址',
+						trigger: 'blur,change'
+					}],
 					m_Type: [{
 						required: true,
 						message: '请选择服务类型'
@@ -104,33 +108,39 @@
 					area: [{
 						required: true,
 						message: '请输入经营面积'
+					}],
+					phone: [{
+						validator: (rule, value, callback) => {
+							return this.$u.test.mobile(value) || this.$u.test.code(value, 8) || value.length === 0
+						},
+						message: '请输入正确的手机号或8位座机号',
+						trigger: 'blur'
+					}],
+					blCode: [{
+						validator: (rule, value, callback) => {
+							return /^[0-9A-HJ-NPQRTUWXY]{2}\d{6}[0-9A-HJ-NPQRTUWXY]{10}|[1-9]\d{14}$/.test(value) || value.length === 0
+						},
+						message: '请输入合法统一社会信用码',
+						trigger: 'blur'
 					}]
 				},
 				action: '/pic/uploadPic', // 演示地址
-				showUploadList: false,
-				fileList: []
+				shopImgList: [] //已上传图片
 			}
 		},
 		async onShow() {
 			let id = uni.getStorageSync('id')
 			let shop = await this.$u.api.getShopInfo(id)
-			let orign = {
-				m_SignName: '',
-				m_Type: '',
-				address: '',
-				bussinessLicense: 1,
-				blPath: '',
-				blName: '',
-				blCode: '',
-				operatorsName: '',
-				phone: '',
-				area: '',
-				status: 0
+			if (shop.paths) {
+				this.shopImgList = shop.paths.map(v => ({ url: `http://123.153.1.134:4399/pic/getImageByte/${v}` }))
 			}
 			this.form = {
 				...this.form,
 				...shop
 			}
+			console.info('shop', this.shopImgList)
+			console.info('photo', this.$refs.shopUpload.lists)
+			
 			this.getOptions()
 		},
 		onBackPress() {
@@ -181,35 +191,33 @@
 				this.form[`${this.selectType}Str`] = val[0].label
 			},
 			submit() {
-				let blList = this.$refs.blUpload.lists
-				let shopList = this.$refs.shopUpload.lists
-				let blPath = []
-				let mPaths = []
+				let photoList = this.$refs.shopUpload.lists
+				console.info('refs', photoList)
+				let paths = []
 				const id = uni.getStorageSync('id')
-				blList.forEach(item => {
-					blPath.push(item.response.data)
+				photoList.forEach(item => {
+					// 判断修改情况，原图片地址
+					if(item.progress !== 100) return
+					if(item.response) {
+						paths.push(item.response.data)
+					} else {
+						console.log(item.url.split('getImageByte/'))
+						paths.push(item.url.split('getImageByte/')[1])
+					}
+					
 				})
-				shopList.forEach(item => {
-					mPaths.push(item.response.data)
-				})
-				console.info('营业执照', blPath)
 				this.$refs.uForm.validate(vaild => {
 					if (vaild) {
 						let params = {
 							id,
 							...this.form,
-							blPath,
-							mPaths
+							paths
 						}
 						console.info('params', params)
-						// 接口404 先模拟跳转
-						this.$u.toast('编辑成功')
-						setTimeout(
-							() => this.$u.route('/', { id }), 2000)
-						// this.$u.api.modifyShopInfo(params).then(res => {
-						// 	this.$u.toast('编辑成功')
-						// 	util.backRouter(this)
-						// })
+						this.$u.api.modifyShopInfo(params).then(res => {
+							this.$u.toast('编辑成功')
+							util.backRouter(this)
+						})
 					}
 				})
 			}
@@ -223,9 +231,6 @@
 <style lang="scss" scoped>
 	.modify {
 		.footer {
-			// position: fixed;
-			// bottom: 0;
-			// left: 0;
 			width: 100%;
 			padding: 64rpx 40rpx;
 			text-align: center;
@@ -244,12 +249,8 @@
 		}
 
 		.unit {
-			// color: #2f2f2f;
 			color: #000;
 		}
 
-		.formView {
-			// margin-bottom: 48rpx;
-		}
 	}
 </style>

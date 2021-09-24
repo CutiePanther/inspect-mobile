@@ -3,56 +3,34 @@
 		<view class="patrol-time">
 			<text>{{detail.createTime}} 巡查记录</text>
 		</view>
-		<u-table class="patrol-table" border-color="#EDEDED" padding="14rpx 0" color="#2F2F2F">
-			<u-tr>
-				<u-th width="40%">检查项</u-th>
-				<u-th>合格</u-th>
-				<u-th>不合格</u-th>
-			</u-tr>
-			<u-tr>
-				<u-td width="40%">五包</u-td>
-				<u-td>{{ five.pass }}项</u-td>
-				<u-td>{{ five.deny }}项</u-td>
-			</u-tr>
-			<u-tr>
-				<u-td width="40%">十不准</u-td>
-				<u-td>{{ ten.pass }}项</u-td>
-				<u-td>{{ ten.deny }}项</u-td>
-			</u-tr>
-			<u-tr>
-				<u-td width="40%">餐饮单位附加要求</u-td>
-				<u-td>{{ additional.pass }}项</u-td>
-				<u-td>{{ additional.deny }}项</u-td>
-			</u-tr>
-		</u-table>
 		<u-collapse :accordion="false" class="patrol-item">
-			<u-collapse-item :title="item.titleName" :open="item.open" align="center"
-				v-for="(item,index) in detail.patrols" :key="item.titleName">
-				<view class="item-wrap" v-for="info in item.info">
-					<view class="item-flex">
-						<view class="item-info">
-							<view class="item-title">
-								{{ info.category }}
+				<u-collapse-item :title="item.titleName" :open="item.open" align="center"
+					v-for="item in detail.patrols" :key="item.titleName">
+					<view class="item-wrap" v-for="info in item.info" :key="info.category">
+						<view class="item-flex">
+							<view class="item-info">
+								<view class="item-title">
+									{{ info.category }}
+								</view>
+								<view class="item-desc">
+									{{ info.content }}
+								</view>
+								<u-radio-group v-model="info.status" @change="radioGroupChange">
+									<u-radio name="true" active-color="#19be6b">合格</u-radio>
+									<u-radio name="false" active-color="#ff9900">不合格</u-radio>
+								</u-radio-group>
 							</view>
-							<view class="item-desc">
-								{{ info.content }}
+							<view v-if="!info.disabled">
+								<image :src="info.pic[0]" mode="aspectFit" @tap="imgListPreview(info.pic)"></image>
 							</view>
-							<u-radio-group v-model="info.status" @change="radioGroupChange">
-								<u-radio name="true" active-color="#19be6b" :disabled="!info.disabled">合格</u-radio>
-								<u-radio name="false" active-color="#ff9900" :disabled="info.disabled">不合格</u-radio>
-							</u-radio-group>
 						</view>
-						<view v-if="!info.disabled">
-							<image :src="info.pic[0]" mode="aspectFit" @tap="imgListPreview(info.pic)"></image>
+						<view class="item-desc" v-if="!info.disabled">
+							{{ info.outcome }}
 						</view>
 					</view>
-					<view class="item-desc" v-if="!info.disabled">
-						{{ info.outcome }}
-					</view>
-				</view>
-			</u-collapse-item>
-		</u-collapse>
-	</view>
+				</u-collapse-item>
+			</u-collapse>
+		</view>
 </template>
 <script>
 	const countMap = [{
@@ -262,15 +240,6 @@
 			font-size: 32rpx;
 			font-weight: bold;
 			padding: 16rpx 0 12rpx;
-		}
-
-		.patrol-table {
-			margin-bottom: 16rpx;
-
-			.u-th {
-				background-color: #3296FA;
-				color: #FFF;
-			}
 		}
 
 		.patrol-item {

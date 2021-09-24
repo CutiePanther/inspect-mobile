@@ -27,8 +27,8 @@
 		</u-table>
 		<u-collapse :accordion="false" class="patrol-item">
 			<u-collapse-item :title="item.titleName" :open="item.open" align="center"
-				v-for="(item,index) in detail.patrols" :key="item.titleName">
-				<view class="item-wrap" v-for="info in item.info">
+				v-for="item in detail.patrols" :key="item.titleName">
+				<view class="item-wrap" v-for="info in item.info" :key="info.category">
 					<view class="item-flex">
 						<view class="item-info">
 							<view class="item-title">
@@ -124,7 +124,6 @@
 	export default {
 		data() {
 			return {
-				isView: true, //查看为true
 				five: {
 					pass: 0,
 					deny: 0
@@ -139,7 +138,6 @@
 				},
 				detail: {
 					createTime: '2021-09-16',
-					result: '扣分0，无不合格项。',
 					name: '朱小贝',
 					patrols: []
 				}
@@ -169,7 +167,7 @@
 						category: info.category,
 						content: info.content || '',
 						disabled: item.status,
-						status: item.status ? 'true': 'false',
+						status: item.status ? 'true' : 'false',
 						pic,
 						errorCode: item.errorCode,
 						mark: item.mark,
@@ -178,15 +176,15 @@
 					switch (item.titleName) {
 						case 1:
 							five.push(temp)
-							temp.disabled ? this.five.pass ++ : this.five.deny ++
+							temp.disabled ? this.five.pass++ : this.five.deny++
 							break
 						case 2:
 							ten.push(temp)
-							temp.disabled ? this.ten.pass ++ : this.ten.deny ++
+							temp.disabled ? this.ten.pass++ : this.ten.deny++
 							break
 						case 3:
 							additional.push(temp)
-							temp.disabled ? this.additional.pass ++ : this.additional.deny ++
+							temp.disabled ? this.additional.pass++ : this.additional.deny++
 							break
 						default:
 							break
@@ -195,20 +193,21 @@
 				this.detail = {
 					...detail,
 					patrols: [{
-						titleName: '五包',
-						info: five,
-						open: true
-					},
-					{
-						titleName: '十不准',
-						info: ten,
-						open: false
-					},
-					{
-						titleName: '餐饮单位附加要求',
-						info: additional,
-						open: false
-					}]
+							titleName: '五包',
+							info: five,
+							open: true
+						},
+						{
+							titleName: '十不准',
+							info: ten,
+							open: false
+						},
+						{
+							titleName: '餐饮单位附加要求',
+							info: additional,
+							open: false
+						}
+					]
 				}
 			},
 			imgListPreview(item) {
@@ -259,20 +258,22 @@
 
 			.item-wrap {
 				margin-bottom: 32rpx;
+
 				.item-flex {
 					display: flex;
 					justify-content: space-between;
 					color: #2F2F2F;
+
 					.item-title {
 						font-size: 32rpx;
 						padding: 8rpx 0;
 					}
-					
+
 					.item-desc {
 						font-size: 24rpx;
 						margin-bottom: 12rpx;
 					}
-					
+
 					image {
 						width: 220rpx;
 						height: 160rpx;

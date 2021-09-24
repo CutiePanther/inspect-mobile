@@ -12,7 +12,7 @@
 				<text class="empty-title">无巡查记录</text>
 			</view>
 		</u-cell-group>
-		<u-icon class="add-btn" name="add" custom-prefix="custom-icon" size="90" color="#3296FA" @tap="link2add"></u-icon>
+		<u-icon v-if="userType === 2" class="add-btn" name="add" custom-prefix="custom-icon" size="90" color="#3296FA" @tap="link2add"></u-icon>
 	</view>
 </template>
 
@@ -20,13 +20,16 @@
 	export default {
 		data() {
 			return {
-				recordList: []
+				recordList: [],
+				userType: 1, // 0游客, 1商户, 2队员
 			}
 		},
 		onShow() {
+			this.userType = uni.getStorageSync('userType') // 判断登录状态
 			this.getRecordList()
 		},
 		methods: {
+			// TODO onReachBottom 滚动到底部触发分页加载
 			async getRecordList () {
 				let res = await this.$u.api.getRecordList()
 				this.recordList = res.pageData

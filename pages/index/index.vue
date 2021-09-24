@@ -34,7 +34,7 @@
 							<u-tag :text="shop.m_Type" mode="plain" type="info" class="type-tag" />
 						</view>
 					</u-cell-item>
-					<u-cell-item title="营业执照" :v-if="shop.bussinessLicense" value="有" hover-class="none" :arrow="false"
+					<u-cell-item title="营业执照" :v-if="shop.bussinessLicense === 1" value="有" hover-class="none" :arrow="false"
 						:border-bottom="false">
 						<u-icon slot="icon" name="licenseicon" custom-prefix="custom-icon"></u-icon>
 					</u-cell-item>
@@ -58,9 +58,9 @@
 				<comment />
 			</view>
 			<view class="operate-wrapper">
-				<u-button v-if="userType!=0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
-				<u-button v-if="userType==1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
-				<u-button v-if="userType==2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
+				<u-button v-if="userType!==0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
+				<u-button v-if="userType===1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
+				<u-button v-if="userType===2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
 			</view>
 		</view>
 	</view>
