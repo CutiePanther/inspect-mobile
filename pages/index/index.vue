@@ -11,7 +11,7 @@
 			<view class="banner">
 				<view class="shop-header">
 					<view class="top-info">
-						<view class="top-title">{{shop.MSignName}}</view>
+						<view class="top-title">{{shop.m_SignName}}</view>
 						<view class="top-address">
 							<u-icon name="w-location" custom-prefix="custom-icon" size="36" color="#3296FA"></u-icon>
 							<view>{{shop.address}}</view>
@@ -21,7 +21,7 @@
 						:margin="0"></vue-qr>
 				</view>
 				<scroll-view scroll-x class="image-list">
-					<image :src="item" mode="widthFix" v-for="(item,index) in shop.blPath" :key="index"
+					<image :src="item" mode="widthFix" v-for="(item,index) in shop.paths" :key="index"
 						:lazy-load="true" @click="imgListPreview(item)" class="scroll-view-item"></image>
 				</scroll-view>
 			</view>
@@ -31,7 +31,7 @@
 						<u-icon slot="icon" name="briefcase" custom-prefix="custom-icon"></u-icon>
 						<view slot="right-icon" class="tag-wrapper">
 							<!-- <u-tag v-for="(item,index) in shop.MType" :key="index" :text="item" mode="plain" type="info" class="type-tag" /> -->
-							<u-tag :text="shop.MType" mode="plain" type="info" class="type-tag" />
+							<u-tag :text="shop.m_Type" mode="plain" type="info" class="type-tag" />
 						</view>
 					</u-cell-item>
 					<u-cell-item title="营业执照" :v-if="shop.bussinessLicense" value="有" hover-class="none" :arrow="false"
@@ -54,13 +54,13 @@
 					</u-cell-item>
 				</u-cell-group>
 			</view>
+			<view v-if="!userType" class="home-footer">
+				<comment />
+			</view>
 			<view class="operate-wrapper">
 				<u-button v-if="userType!=0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
 				<u-button v-if="userType==1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
 				<u-button v-if="userType==2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
-			</view>
-			<view v-if="!userType" class="home-footer">
-				<comment />
 			</view>
 		</view>
 	</view>
@@ -87,11 +87,11 @@
 				},
 				userType: '',
 				shop: {
-					MSignName: '', // 商户名称
-					MType: '', // 服务类型
+					m_SignName: '', // 商户名称
+					m_Type: '', // 服务类型
 					address: '', // 商户地址
 					bussinessLicense: 1, //营业执照 1有2无3过期
-					blPath: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg',
+					paths: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg',
 						'/static/shop.jpg', '/static/license.jpg', '/static/shop.jpg'
 					], // 营业执照照片
 					blName: '', // 营业执照名称
@@ -105,7 +105,6 @@
 			}
 		},
 		async onShow() {
-			debugger
 			let typeMap = {}
 			let areaMap = {}			
 			if(uni.getStorageSync('typeMap')) {
@@ -127,11 +126,15 @@
 				let shop = await this.$u.api.getShopInfo(id)
 				uni.setStorageSync('id', id) // 存储商户id
 				this.id = id
+				if(shop.paths.length) {
+					shop.paths = shop.paths.map(v => { return `http://123.153.1.134:4399/pic/getImageByte/${v}`})
+				}
+				console.log(shop)
 				this.shop = {
 					...this.shop,
 					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
 					...shop,
-					MType: typeMap[shop.MType],
+					m_Type: typeMap[shop.m_Type],
 					area: areaMap[shop.area]
 				}
 			}

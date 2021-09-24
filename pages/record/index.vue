@@ -4,7 +4,7 @@
 			<u-cell-item v-for="(item, index) in recordList" :key="index" :title="item.createTime" :label="item.info" class="u-m-b-20" bg-color="#fff" @tap="link2detail(item)">
 				<view slot="icon" class="circle"></view>
 				<view slot="right-icon" class="person">
-					<u-icon name="server-man" color="#2979ff" size="28"></u-icon>执法队员：{{item.userId}}
+					<u-icon name="server-man" color="#2979ff" size="28"></u-icon>执法队员：{{item.name}}
 				</view>
 			</u-cell-item>
 			<view class="empty" v-if="recordList.length === 0">
@@ -13,6 +13,7 @@
 				<text class="empty-title">无巡查记录</text>
 			</view>
 		</u-cell-group>
+		<u-icon class="add-btn" name="add" custom-prefix="custom-icon" size="90" color="#3296FA" @tap="link2add"></u-icon>
 	</view>
 </template>
 
@@ -30,26 +31,40 @@
 			async getRecordList () {
 				let params = {}
 				let res = await this.$u.api.getRecordList()
-				this.recordList = res.pageData
+				this.recordList = [res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0],res.pageData[0]]
 				console.log(this.recordList)
 			},
 			link2detail(item) {
 				console.log(item)
 				this.$u.route('/pages/patrol/detail', item)
+			},
+			link2add() {
+				console.log('add')
+				this.$u.route('/pages/patrol/index')
 			}
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+	uni-page-body {
+		height: 100%;
+	}
 	.content {
+		height: 100%;
 		padding: 24rpx;
+		.record-wrap {
+			height: 100%;
+		}
 		.record-wrap ::v-deep .u-cell-item-box {
-			background-color: #f3f3f3;
+			background-color: #EDEDED;
+			max-height: calc(100% - 96rpx);
+			overflow: scroll;
 		}
 		.u-cell {
 			align-items: start;
 			border-radius: 12rpx;
+			padding: 24rpx 32rpx;
 		}
 		.circle {
 			width: 20rpx;
@@ -74,6 +89,11 @@
 			font-size: 36rpx;
 			color: #c0c4cc;
 			text-align: center;
+		}
+		.add-btn {
+			position: fixed;
+			bottom: 24rpx;
+			right: 24rpx;
 		}
 	}
 </style>

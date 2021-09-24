@@ -55,8 +55,8 @@ uni-page-body {
 	flex-direction: column;
 	justify-content: space-between;
 	font-size: 28rpx;
-	background-size: cover;
 	background: url(../../static/img/login.png);
+	background-size: cover;
 	.content{
 		.logo {
 			display: block;

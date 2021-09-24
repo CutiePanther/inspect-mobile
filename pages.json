@@ -9,13 +9,15 @@
 				"navigationBarTitleText": "商户主页",
 				"navigationStyle": "custom",
 				"scrollIndicator": "none",
-				"enablePullDownRefresh": true
+				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/shop/modify",
 			"style": {
 				"navigationBarTitleText": "编辑商户",
+				"navigationStyle": "custom",
+				"scrollIndicator": "none",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -23,6 +25,8 @@
 			"path": "pages/patrol/index",
 			"style": {
 				"navigationBarTitleText": "巡查上报",
+				"navigationStyle": "custom",
+				"scrollIndicator": "none",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -30,6 +34,8 @@
 			"path": "pages/patrol/detail",
 			"style": {
 				"navigationBarTitleText": "巡查详情",
+				"navigationStyle": "custom",
+				"scrollIndicator": "none",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -37,14 +43,17 @@
 			"path": "pages/record/index",
 			"style": {
 				"navigationBarTitleText": "巡查记录",
-				"enablePullDownRefresh": true
+				"navigationStyle": "custom",
+				"scrollIndicator": "none",
+				"enablePullDownRefresh": false
 			}
 		},
 		{
 			"path": "pages/login/index",
 			"style": {
-				"navigationStyle": "custom",
 				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom",
+				"scrollIndicator": "none",
 				"enablePullDownRefresh": false
 			}
 		},

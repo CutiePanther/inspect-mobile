@@ -2,8 +2,8 @@
 	<view class="modify">
 		<u-form :rule="rules" :model="form" ref="uForm" class="formView">
 			<u-cell-group>
-				<u-form-item required label="商铺名称" label-width="auto" class="formList" prop="mSignName">
-					<u-input v-model="form.MSignName" maxlength="32" :clearable="true" />
+				<u-form-item required label="商铺名称" label-width="auto" class="formList" prop="m_SignName">
+					<u-input v-model="form.m_SignName" maxlength="32" :clearable="true" />
 				</u-form-item>
 				<u-form-item required label="详细地址" label-width="auto" class="formList" prop="address">
 					<u-input v-model="form.address" maxlength="50" :clearable="true" />
@@ -67,8 +67,8 @@
 				selectType: '',
 				selectView: false,
 				form: {
-					MSignName: '小葡萄的小店', // 商铺名称
-					MType: '零售业', // 服务类型
+					m_SignName: '小葡萄的小店', // 商铺名称
+					m_Type: '零售业', // 服务类型
 					address: '浙江省杭州市滨江区滨安路1080号', // 详细地址
 					businessLicense: 1,
 					blPath: '', // 营业执照照片
@@ -82,7 +82,7 @@
 					areaStr: ''
 				},
 				formOption: {
-					MType: [],
+					m_Type: [],
 					area: []
 				},
 				radioList: [{
@@ -115,8 +115,8 @@
 			let id = uni.getStorageSync('id')
 			let shop = await this.$u.api.getShopInfo(id)
 			let orign = {
-				MSignName: '',
-				MType: '',
+				m_SignName: '',
+				m_Type: '',
 				address: '',
 				bussinessLicense: 1,
 				blPath: '',
@@ -164,7 +164,7 @@
 					}
 				})
 				// 初始化绑定值
-				this.form.MTypeStr = typeMap[this.form.MType]
+				this.form.MTypeStr = typeMap[this.form.m_Type]
 				this.form.areaStr = areaMap[this.form.area]
 				this.formOption = {
 					MType,
