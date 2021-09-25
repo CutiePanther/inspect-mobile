@@ -24,14 +24,14 @@
 					class="formList" prop="blCode">
 					<u-input v-model="form.blCode" maxlength="50" :clearable="true" />
 				</u-form-item>
-				<u-form-item v-if="form.businessLicense === 1" class="formList" label="营业执照" prop="photo"
+				<!-- <u-form-item v-if="form.businessLicense === 1" class="formList" label="营业执照" prop="photo"
 					label-width="auto">
 					<u-upload ref="blUpload" :action="action" max-count="3" width="160" height="160"
 						:limitType="['jpg']"></u-upload>
-				</u-form-item>
+				</u-form-item> -->
 				<u-form-item required label="经营范围" label-width="auto" class="formList" right-icon="arrow-right"
-					prop="MType">
-					<u-input v-model="form.MTypeStr" :disabled="true" @tap="showSelect('MType')" />
+					prop="m_Type">
+					<u-input v-model="form.m_TypeStr" :disabled="true" @tap="showSelect('m_Type')" />
 				</u-form-item>
 				<u-form-item required label="经营场所面积" label-width="auto" class="formList" right-icon="arrow-right"
 					prop="area">
@@ -78,7 +78,7 @@
 					phone: '13588658888', // 联系方式
 					area: '', // 经营面积
 					mPaths: '', // 商铺实景图
-					MTypeStr: '',
+					m_TypeStr: '',
 					areaStr: ''
 				},
 				formOption: {
@@ -97,7 +97,7 @@
 					}
 				],
 				rules: {
-					MHType: [{
+					m_Type: [{
 						required: true,
 						message: '请选择服务类型'
 					}],
@@ -151,7 +151,7 @@
 			getOptions() {
 				let typeMap = uni.getStorageSync('typeMap')
 				let areaMap = uni.getStorageSync('areaMap')
-				let MType = Object.keys(typeMap).map((v, index) => {
+				let m_Type = Object.keys(typeMap).map((v, index) => {
 					return {
 						value: v,
 						label: typeMap[v]
@@ -164,10 +164,10 @@
 					}
 				})
 				// 初始化绑定值
-				this.form.MTypeStr = typeMap[this.form.m_Type]
+				this.form.m_TypeStr = typeMap[this.form.m_Type]
 				this.form.areaStr = areaMap[this.form.area]
 				this.formOption = {
-					MType,
+					m_Type,
 					area
 				}
 			},
