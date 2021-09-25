@@ -146,9 +146,7 @@
 		onLoad() {
 			let pages = getCurrentPages()
 			let currentPage = pages[pages.length - 1]
-			const {
-				id
-			} = currentPage.options
+			const { id } = currentPage.options
 			this.getRecordDetail(id)
 		},
 		methods: {

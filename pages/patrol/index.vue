@@ -1,30 +1,29 @@
 <template>
 	<view class="content">
 		<view class="patrol-time">
-			<text>{{detail.createTime}} 巡查记录</text>
+			<text>{{m_SignName}}: 巡查上报</text>
 		</view>
+		
 		<u-collapse :accordion="false" class="patrol-item">
 				<u-collapse-item :title="item.titleName" :open="item.open" align="center"
 					v-for="item in detail.patrols" :key="item.titleName">
-					<view class="item-wrap" v-for="info in item.info" :key="info.category">
-						<view class="item-flex">
-							<view class="item-info">
-								<view class="item-title">
-									{{ info.category }}
-								</view>
-								<view class="item-desc">
-									{{ info.content }}
-								</view>
-								<u-radio-group v-model="info.status" @change="radioGroupChange">
-									<u-radio name="true" active-color="#19be6b">合格</u-radio>
-									<u-radio name="false" active-color="#ff9900">不合格</u-radio>
-								</u-radio-group>
+					<view class="item-wrap" v-for="info in item.info" :key="info.category">					
+						<view class="item-info">
+							<view class="item-title">
+								{{ info.category }}
 							</view>
-							<view v-if="!info.disabled">
-								<image :src="info.pic[0]" mode="aspectFit" @tap="imgListPreview(info.pic)"></image>
+							<view class="item-desc">
+								{{ info.content }}
 							</view>
+							<u-radio-group v-model="info.status" @change="radioGroupChange">
+								<u-radio name="true" active-color="#19be6b">合格</u-radio>
+								<u-radio name="false" active-color="#ff9900">不合格</u-radio>
+							</u-radio-group>
 						</view>
-						<view class="item-desc" v-if="!info.disabled">
+						<view v-show="info.status === 'false'">
+							<u-upload ref="shopUpload" :max-size="10 * 1024 * 1024" :file-list="shopImgList" :action="action" max-count="3" width="160" height="160"></u-upload>
+						</view>			
+						<view class="item-desc"  v-if="info.status === 'false'">
 							{{ info.outcome }}
 						</view>
 					</view>
@@ -36,67 +35,87 @@
 	const countMap = [{
 			category: '包垃圾分类',
 			content: '做好垃圾分类，定时定点规范投放。',
+            titleName: 1
 		},
 		{
 			category: '包秩序井然',
-			content: '维护责任区卫生清洁，车辆规范停放。'
+			content: '维护责任区卫生清洁，车辆规范停放。',
+			titleName: 1
 		},
 		{
 			category: '包立面美观',
-			content: '保持建筑外立面、户外设施完好整洁。'
+			content: '保持建筑外立面、户外设施完好整洁。',
+			titleName: 1
 		},
 		{
 			category: '包绿化完好',
-			content: '维护责任区树木花草及绿化设施完好。'
+			content: '维护责任区树木花草及绿化设施完好。',
+			titleName: 1
 		},
 		{
 			category: '包文明劝导',
 			content: '劝导责任区范围内不文明行为。',
+			titleName: 1
 		},
 		{
-			category: '不乱搭乱建'
+			category: '不乱搭乱建',
+			titleName: 2
 		},
 		{
-			category: '不占道经营'
+			category: '不占道经营',
+			titleName: 2
 		},
 		{
-			category: '不乱贴乱画'
+			category: '不乱贴乱画',
+			titleName: 2
 		},
 		{
-			category: '不乱倒垃圾'
+			category: '不乱倒垃圾',
+			titleName: 2
 		},
 		{
-			category: '不乱倒污水'
+			category: '不乱倒污水',
+			titleName: 2
 		},
 		{
-			category: '不私摆乱放'
+			category: '不私摆乱放',
+			titleName: 2
 		},
 		{
-			category: '不侵占绿地'
+			category: '不侵占绿地',
+			titleName: 2
 		},
 		{
-			category: '不沿街晾晒'
+			category: '不沿街晾晒',
+			titleName: 2
 		},
 		{
-			category: '不制造噪音'
+			category: '不制造噪音',
+			titleName: 2
 		},
 		{
-			category: '不放养宠物'
+			category: '不放养宠物',
+			titleName: 2
 		},
 		{
-			category: '按标准安装油烟净化装置，正常使用油烟净化装置。'
+			category: '按标准安装油烟净化装置，正常使用油烟净化装置。',
+			titleName: 3
 		},
 		{
-			category: '落实油烟净化装置定期清洗'
+			category: '落实油烟净化装置定期清洗',
+			titleName: 3
 		},
 		{
-			category: '大中型餐饮经营单位，落实第三方清洗制度'
+			category: '大中型餐饮经营单位，落实第三方清洗制度',
+			titleName: 3
 		},
 		{
-			category: '大中型餐饮经营单位，及时登记相关清洗台账'
+			category: '大中型餐饮经营单位，及时登记相关清洗台账',
+			titleName: 3
 		},
 		{
-			category: '有油烟在线监测系统的，按要求使用'
+			category: '有油烟在线监测系统的，按要求使用',
+			titleName: 3
 		}
 	]
 	// {
@@ -125,63 +144,34 @@
 	export default {
 		data() {
 			return {
-				isView: true, //查看为true
-				five: {
-					pass: 5,
-					deny: 0
-				},
-				ten: {
-					pass: 10,
-					deny: 0
-				},
-				additional: {
-					pass: 5,
-					deny: 0
-				},
+				m_SignName: '', // 商铺名称
 				detail: {
-					createTime: '2021-09-16',
-					result: '扣分0，无不合格项。',
-					name: '朱小贝',
+					merchantId: null,
+					template: 0,
 					patrols: []
 				}
 			}
 		},
 		onLoad() {
-			let pages = getCurrentPages()
-			let currentPage = pages[pages.length - 1]
-			const {
-				id
-			} = currentPage.options
-			this.getRecordDetail(id)
+			this.m_SignName = uni.getStorageSync('m_SignName')
+			this.initData()
 		},
 		methods: {
-			async getRecordDetail(id) {
-				const detail = await this.$u.api.getRecordDetail(id)
-				// count: 1
-				// errorCode: 0
-				// images: ["729f391c3a7245d0abf2af3fa1468a23", "729f391c3a7245d0abf2af3fa1468a23",…]
-				// mark: 1
-				// outcome: "客户原因造成::现场整改,扣分:0.5"
-				// status: false
-				// titleName: 1
+			initData() { // 初始化数据
 				let five = [] // 五包
 				let ten = [] // 十不准
 				let additional = [] // 附加选项
-				detail.patrols.forEach(item => {
-					let info = countMap[item.count - 1]
-					let pic = []
-					if (item.images) {
-						pic = item.images.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
-					}
+				countMap.forEach((item,index) => {
 					let temp = {
-						category: info.category,
-						content: info.content || '',
-						disabled: item.status,
-						status: item.status ? 'true': 'false',
-						pic,
-						errorCode: item.errorCode,
-						mark: item.mark,
-						outcome: item.outcome || ''
+						count: index + 1,
+						titleName: item.titleName,
+						category: item.category,
+						content: item.content || '',
+						status: 'true',
+						pic: [],
+						errorCode: null,
+						mark: null,
+						outcome: ''
 					}
 					switch (item.titleName) {
 						case 1:
@@ -197,8 +187,10 @@
 							break
 					}
 				})
+				debugger
 				this.detail = {
-					...detail,
+					merchantId: uni.getStorageSync('id'),
+					template: 0,
 					patrols: [{
 						titleName: '五包',
 						info: five,
@@ -260,24 +252,20 @@
 
 			.item-wrap {
 				margin-bottom: 32rpx;
-				.item-flex {
-					display: flex;
-					justify-content: space-between;
-					color: #2F2F2F;
-					.item-title {
-						font-size: 32rpx;
-						padding: 8rpx 0;
-					}
-					
-					.item-desc {
-						font-size: 24rpx;
-						margin-bottom: 12rpx;
-					}
-					
-					image {
-						width: 220rpx;
-						height: 160rpx;
-					}
+				color: #2F2F2F;
+				.item-title {
+					font-size: 32rpx;
+					padding: 8rpx 0;
+				}
+				
+				.item-desc {
+					font-size: 24rpx;
+					margin-bottom: 12rpx;
+				}
+				
+				image {
+					width: 220rpx;
+					height: 160rpx;
 				}
 			}
 		}

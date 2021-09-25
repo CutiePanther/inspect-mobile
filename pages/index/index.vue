@@ -131,6 +131,7 @@
 			if (id) {
 				let shop = await this.$u.api.getShopInfo(id)
 				uni.setStorageSync('id', id) // 存储商户id
+				uni.setStorageSync('m_SignName', shop.m_SignName) // 存储商户名称
 				this.id = id
 				this.codeColor = this.computeSocre(shop.inspectionScore, scoreRange)
 				if (shop.paths.length) {

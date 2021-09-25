@@ -42,7 +42,7 @@
 					<u-input v-model="form.phone" maxlength="11" :clearable="true" />
 				</u-form-item>
 				<u-form-item class="formList" label="店铺照片" prop="photo" label-width="auto">
-					<u-upload ref="shopUpload" :file-list="shopImgList" :action="action" max-count="5" width="160" height="160"></u-upload>
+					<u-upload ref="shopUpload" :max-size="10 * 1024 * 1024" :file-list="shopImgList" :action="action" max-count="5" :show-progress="false" width="160" height="160"></u-upload>
 				</u-form-item>
 
 			</u-cell-group>
@@ -216,7 +216,7 @@
 						console.info('params', params)
 						this.$u.api.modifyShopInfo(params).then(res => {
 							this.$u.toast('编辑成功')
-							util.backRouter(this)
+							setTimeout(() => util.backRouter(this), 2000)
 						})
 					}
 				})
