@@ -56,7 +56,7 @@ export default {
 				return `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`
 		}
 	},
-	backRouter(self, url = 'pages/index/index') {
+	backRouter(self, url = '/') {
 		self.$u.route({
 			type: 'redirectTo',
 			url

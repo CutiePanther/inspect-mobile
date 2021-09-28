@@ -21,7 +21,7 @@
 						:margin="0"></vue-qr>
 				</view>
 				<scroll-view scroll-x class="image-list">
-					<image :src="item" mode="widthFix" v-for="(item,index) in shop.paths" :key="index" :lazy-load="true"
+					<image :src="item" mode="widthFix" v-for="(item, index) in shop.paths" :key="index" :lazy-load="true"
 						@click="imgListPreview(item)" class="scroll-view-item"></image>
 				</scroll-view>
 			</view>
@@ -55,10 +55,10 @@
 				</u-cell-group>
 			</view>
 			<view v-if="!userType" class="home-footer">
-				<comment />
+				<comment :commentList="commentList" />
 			</view>
 			<view class="operate-wrapper">
-				<u-button v-if="userType!==0" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
+				<u-button v-if="userType" size="medium" type="primary" plain @tap="link2record">巡查记录</u-button>
 				<u-button v-if="userType===1" size="medium" type="primary" plain @tap="link2modify">编辑商铺</u-button>
 				<u-button v-if="userType===2" size="medium" type="primary" plain @tap="link2patrol">巡查上报</u-button>
 			</view>
@@ -93,9 +93,7 @@
 					address: '', // 商户地址
 					bussinessLicense: 1, //营业执照 1有2无3过期
 					inspectionScore: 99,
-					paths: ['/static/license.jpg', '/static/license.jpg', '/static/shop.jpg', '/static/license.jpg',
-						'/static/shop.jpg', '/static/license.jpg', '/static/shop.jpg'
-					], // 营业执照照片
+					paths: [], // 营业执照照片
 					blName: '', // 营业执照名称
 					blCode: '', // 社会信用代码
 					operatorsName: '', // 经营者姓名
@@ -103,51 +101,71 @@
 					area: '', // 经营场所面积
 					qrCode: 'http://123.153.1.134:4399/h5/#/', // 二维码
 					status: 0 // 0正常营业
-				}
+				},
+				commentList: []
 			}
 		},
-		async onShow() {
-			let typeMap = {}
-			let areaMap = {}
-			let scoreRange = ''
-			if (uni.getStorageSync('scoreRange')) {
-				typeMap = uni.getStorageSync('typeMap')
-				areaMap = uni.getStorageSync('areaMap')
-				scoreRange = uni.getStorageSync('scoreRange')
-			} else {
-				const dic = await this.$u.api.getDirectory()
-				typeMap = dic['02']
-				areaMap = dic['03']
-				scoreRange = dic['04']['0401']
-				uni.setStorageSync('typeMap', typeMap)
-				uni.setStorageSync('areaMap', areaMap)
-				uni.setStorageSync('scoreRange', scoreRange)
-			}
-			let pages = getCurrentPages()
-			let currentPage = pages[pages.length - 1]
-			const { id } = currentPage.options
-			this.userType = uni.getStorageSync('userType') // 判断登录状态
-			console.log('userType', this.userType)
-			if (id) {
-				let shop = await this.$u.api.getShopInfo(id)
-				uni.setStorageSync('id', id) // 存储商户id
-				uni.setStorageSync('m_SignName', shop.m_SignName) // 存储商户名称
-				this.id = id
-				this.codeColor = this.computeSocre(shop.inspectionScore, scoreRange)
-				if (shop.paths.length) {
-					// shop.paths = shop.paths.map(v => `${location.origin}/pic/getImageByte/${v}`)
-					shop.paths = shop.paths.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
-				}
-				this.shop = {
-					...this.shop,
-					qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
-					...shop,
-					m_Type: typeMap[shop.m_Type],
-					area: areaMap[shop.area]
-				}
-			}
+		onShow() {
+			this.initData()
 		},
 		methods: {
+			async initData() {
+				let typeMap = {}
+				let areaMap = {}
+				let scoreRange = ''
+				if (uni.getStorageSync('scoreRange')) {
+					typeMap = uni.getStorageSync('typeMap')
+					areaMap = uni.getStorageSync('areaMap')
+					scoreRange = uni.getStorageSync('scoreRange')
+				} else {
+					const dic = await this.$u.api.getDirectory()
+					typeMap = dic['02']
+					areaMap = dic['03']
+					scoreRange = dic['04']['0401']
+					uni.setStorageSync('typeMap', typeMap)
+					uni.setStorageSync('areaMap', areaMap)
+					uni.setStorageSync('scoreRange', scoreRange)
+				}
+				let pages = getCurrentPages()
+				let currentPage = pages[pages.length - 1]
+				const { id } = currentPage.options
+				this.userType = uni.getStorageSync('userType') // 判断登录状态
+				console.log('userType', this.userType)
+				if (id) {
+					// 获取商铺信息
+					let shop = await this.$u.api.getShopInfo(id)
+					uni.setStorageSync('id', id) // 存储商户id
+					uni.setStorageSync('m_SignName', shop.m_SignName) // 存储商户名称
+					this.id = id
+					this.codeColor = this.computeSocre(shop.inspectionScore, scoreRange)
+					if (shop.paths && shop.paths.length) {
+						// shop.paths = shop.paths.map(v => `${location.origin}/pic/getImageByte/${v}`)
+						shop.paths = shop.paths.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
+					}
+					this.shop = {
+						...this.shop,
+						qrCode: `http://123.153.1.134:4399/h5/#/?id=${id}`,
+						...shop,
+						m_Type: typeMap[shop.m_Type],
+						area: areaMap[shop.area]
+					}
+					// 获取评论信息 TODO分页
+					let { pageData } = await this.$u.api.getComments({ marchantId: this.id})
+					// this.commentList = pageData
+					this.commentList = [{
+							"evaPaths": [
+								"729f391c3a7245d0abf2af3fa1468a23",
+								"729f391c3a7245d0abf2af3fa1468a23",
+								"729f391c3a7245d0abf2af3fa1468a23"
+							],
+							"evaluation": "相当不错,sssssssss",
+							"marchantId": 123,
+							"serverFraction": 4,
+							"shopFraction": 4,
+							name: '游客'
+						}]
+				}
+			},
 			computeSocre(socre, range) {
 				if (range.length) {
 					let [zore, low, mid, height] = range.split('-')

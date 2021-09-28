@@ -6,7 +6,9 @@ const install = (Vue, vm) => {
 		login: (params) => vm.$u.post('/login', params),
 		logout: (params) => vm.$u.get('/exit', params),
 		getRecordList: (params) => vm.$u.get('/patrolInfo/page', params),
-		getRecordDetail: (id) => vm.$u.get(`/patrolInfo/view/${id}`)
+		getRecordDetail: (id) => vm.$u.get(`/patrolInfo/view/${id}`),
+		addPatrols: (params) => vm.$u.post('/patrolInfo/add', params),
+		getComments: (params)=> vm.$u.get('tourist/page', params)
 	}
 	
 	vm.$u.api = api;

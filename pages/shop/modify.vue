@@ -42,7 +42,7 @@
 					<u-input v-model="form.phone" maxlength="11" :clearable="true" />
 				</u-form-item>
 				<u-form-item class="formList" label="店铺照片" prop="photo" label-width="auto">
-					<u-upload ref="shopUpload" :max-size="10 * 1024 * 1024" :file-list="shopImgList" :action="action" max-count="5" :show-progress="false" width="160" height="160"></u-upload>
+					<u-upload ref="shopUpload" :max-size="10 * 1024 * 1024" :file-list="shopImgList" :action="action" max-count="5" :show-progress="false" width="160" height="160" upload-text="上传图片"></u-upload>
 				</u-form-item>
 
 			</u-cell-group>
@@ -55,7 +55,6 @@
 </template>
 
 <script>
-	import util from '@/common/utils.js'
 	export default {
 		data() {
 			return {
@@ -124,23 +123,20 @@
 						trigger: 'blur'
 					}]
 				},
-				action: '/pic/uploadPic', // 演示地址
+				action: '/pic/uploadPic',
 				shopImgList: [] //已上传图片
 			}
 		},
 		async onShow() {
-			let id = uni.getStorageSync('id')
-			let shop = await this.$u.api.getShopInfo(id)
+			this.shopId = uni.getStorageSync('id')
+			let shop = await this.$u.api.getShopInfo(shopId)
 			if (shop.paths) {
 				this.shopImgList = shop.paths.map(v => ({ url: `http://123.153.1.134:4399/pic/getImageByte/${v}` }))
 			}
 			this.form = {
 				...this.form,
 				...shop
-			}
-			console.info('shop', this.shopImgList)
-			console.info('photo', this.$refs.shopUpload.lists)
-			
+			}		
 			this.getOptions()
 		},
 		onBackPress() {
@@ -151,7 +147,7 @@
 					content: '本次信息还未填写完成，是否确认退出？',
 					success: (res) => {
 						if (res.confirm) {
-							util.backRouter(self)
+							this.$u.route('/', {id: this.shopId})
 						}
 					}
 				})
@@ -192,7 +188,6 @@
 			},
 			submit() {
 				let photoList = this.$refs.shopUpload.lists
-				console.info('refs', photoList)
 				let paths = []
 				const id = uni.getStorageSync('id')
 				photoList.forEach(item => {
@@ -216,7 +211,7 @@
 						console.info('params', params)
 						this.$u.api.modifyShopInfo(params).then(res => {
 							this.$u.toast('编辑成功')
-							setTimeout(() => util.backRouter(this), 2000)
+							setTimeout(() => this.$u.route('/', {id: this.shopId}), 2000)
 						})
 					}
 				})
@@ -232,7 +227,7 @@
 	.modify {
 		.footer {
 			width: 100%;
-			padding: 64rpx 40rpx;
+			padding: 24rpx 40rpx;
 			text-align: center;
 		}
 

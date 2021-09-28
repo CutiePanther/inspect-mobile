@@ -138,7 +138,6 @@
 				},
 				detail: {
 					createTime: '2021-09-16',
-					name: '朱小贝',
 					patrols: []
 				}
 			}
