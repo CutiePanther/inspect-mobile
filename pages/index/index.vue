@@ -151,19 +151,31 @@
 					}
 					// 获取评论信息 TODO分页
 					let { pageData } = await this.$u.api.getComments({ marchantId: this.id})
-					// this.commentList = pageData
-					this.commentList = [{
-							"evaPaths": [
-								"729f391c3a7245d0abf2af3fa1468a23",
-								"729f391c3a7245d0abf2af3fa1468a23",
-								"729f391c3a7245d0abf2af3fa1468a23"
-							],
-							"evaluation": "相当不错,sssssssss",
-							"marchantId": 123,
-							"serverFraction": 4,
-							"shopFraction": 4,
-							name: '游客'
-						}]
+					if (shop.paths && shop.paths.length) {
+						// shop.paths = shop.paths.map(v => `${location.origin}/pic/getImageByte/${v}`)
+						shop.paths = shop.paths.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
+					}
+					this.commentList = pageData.map(item => {
+						if (item.evaPaths && item.evaPaths.length) {
+							item.evaPaths = item.evaPaths.map(v => `http://123.153.1.134:4399/pic/getImageByte/${v}`)
+						}
+						item.name = item.name || '游客'+ this.$u.guid(4)
+						return item
+					})
+					// this.commentList = []
+					// this.commentList = [{
+					// 		"evaPaths": [
+					// 			"729f391c3a7245d0abf2af3fa1468a23",
+					// 			"729f391c3a7245d0abf2af3fa1468a23",
+					// 			"729f391c3a7245d0abf2af3fa1468a23"
+					// 		],
+					// 		"evaluation": "相当不错,sssssssss",
+					// 		"marchantId": 123,
+					// 		"serverFraction": 4,
+					// 		"shopFraction": 4,
+					// 		name: '游客'
+					// 	}]
+					console.info('comment', this.commentList)
 				}
 			},
 			computeSocre(socre, range) {
@@ -285,11 +297,7 @@
 			}
 
 			.image-list {
-				// display: flex;
-				// justify-content: space-between;
-				// gap: 8rpx;
 				margin-top: 20rpx;
-				width: 100%;
 				white-space: nowrap;
 				width: 654rpx;
 				overflow: hidden;
@@ -324,6 +332,7 @@
 			background: #fff;
 			border-radius: 12rpx;
 			margin-bottom: 24rpx;
+			padding-bottom: 8rpx;
 
 			.u-cell {
 				padding: 20rpx 32rpx;
