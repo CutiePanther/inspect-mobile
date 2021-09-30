@@ -189,7 +189,6 @@
 			submit() {
 				let photoList = this.$refs.shopUpload.lists
 				let paths = []
-				const id = uni.getStorageSync('id')
 				photoList.forEach(item => {
 					// 判断修改情况，原图片地址
 					if(item.progress !== 100) return
@@ -204,14 +203,14 @@
 				this.$refs.uForm.validate(vaild => {
 					if (vaild) {
 						let params = {
-							id,
+							id: this.shopId,
 							...this.form,
 							paths
 						}
 						console.info('params', params)
 						this.$u.api.modifyShopInfo(params).then(res => {
 							this.$u.toast('编辑成功')
-							setTimeout(() => this.$u.route('/', {id: this.shopId}), 2000)
+							setTimeout(() => this.$u.route('/', {id: this.shopId}), 1000)
 						})
 					}
 				})

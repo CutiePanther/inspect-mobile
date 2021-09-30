@@ -37,6 +37,7 @@ export default {
 				console.log(res)
 				const id = uni.getStorageSync('id')
 				uni.setStorageSync('userType', res.userType)
+				uni.setStorageSync('userInfo', res)
 				this.$u.route('/', {id})
 			})
 		}

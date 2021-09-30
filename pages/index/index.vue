@@ -162,19 +162,6 @@
 						item.name = item.name || '游客'+ this.$u.guid(4)
 						return item
 					})
-					// this.commentList = []
-					// this.commentList = [{
-					// 		"evaPaths": [
-					// 			"729f391c3a7245d0abf2af3fa1468a23",
-					// 			"729f391c3a7245d0abf2af3fa1468a23",
-					// 			"729f391c3a7245d0abf2af3fa1468a23"
-					// 		],
-					// 		"evaluation": "相当不错,sssssssss",
-					// 		"marchantId": 123,
-					// 		"serverFraction": 4,
-					// 		"shopFraction": 4,
-					// 		name: '游客'
-					// 	}]
 					console.info('comment', this.commentList)
 				}
 			},
@@ -207,6 +194,7 @@
 				this.$u.api.logout().then(res => {
 					console.log(res)
 					uni.removeStorageSync('userType') // 清除用户登录状态
+					uni.removeStorageSync('userInfo') // 清除用户登录状态
 					this.$u.route({
 						url: '/',
 						type: 'reLaunch',

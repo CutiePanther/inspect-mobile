@@ -22,9 +22,9 @@
 					</view>
 					<view class="rate">
 						<span class="shop-rate">商铺评价</span>
-						<u-rate :current="5" :disabled="true" size="13" :colors="colors" gutter="2"></u-rate>
+						<u-rate v-model="comment.shopFraction" :count="5" :disabled="true" size="13" :colors="colors" gutter="2"></u-rate>
 						<span class="service-rate">服务态度</span>
-						<u-rate :current="5" :disabled="true" size="13" :colors="colors" gutter="2"></u-rate>
+						<u-rate v-model="comment.serverFraction" :count="5" :disabled="true" size="13" :colors="colors" gutter="2"></u-rate>
 
 					</view>
 				</view>
