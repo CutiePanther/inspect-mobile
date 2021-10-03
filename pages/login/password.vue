@@ -2,13 +2,13 @@
 	<view class="wrap">
 		<view class="content">
 			<image class="logo" src="../../static/img/logo.png" mode="widthFix"></image>
-			<u-input class="login-item" type="number" v-model="username" placeholder="请输入手机号" height="100" :focus="true">
-				<u-icon name="user" custom-prefix="custom-icon" class="login-icon"></u-icon>
-			</u-input>
-			<u-input class="login-item" type="password" v-model="password" placeholder="请输入密码" :password-icon="true" height="100">
+			<u-input class="login-item" type="password" v-model="newPassword" placeholder="请输入新密码" :password-icon="true" height="100">
 				<u-icon name="password" custom-prefix="custom-icon" class="login-icon"></u-icon>
 			</u-input>
-			<button @tap="submit" class="login-btn">登 录</button>
+			<u-input class="login-item" type="password" v-model="confirmPassword" placeholder="请确认密码" :password-icon="true" height="100">
+				<u-icon name="password" custom-prefix="custom-icon" class="login-icon"></u-icon>
+			</u-input>
+			<button @tap="submit" class="login-btn">提 交</button>
 		</view>
 		<view class="buttom">
 			<view class="hint">
@@ -23,17 +23,24 @@ export default {
 	data() {
 		return {
 			username: '',
-			password: ''
+			oldPassword: '123456',
+			newPassword: '',
+			confirmPassword: ''
 		}
 	},
-
+	onShow() {
+		let pages = getCurrentPages()
+		let currentPage = pages[pages.length - 1]
+		const { user } = currentPage.options
+		this.username = user
+	},
 	methods: {
 		submit() {
-			if(!this.$u.test.mobile(this.username)) {
-				this.$u.toast('手机号填写错误')
+			if(this.newPassword !== this.confirmPassword) {
+				this.$u.toast('两次输入不一致')
 				return false
 			}
-			this.$u.api.login({'username': this.username, 'password': this.password}).then(res => {
+			this.$u.api.settingPassword({'username': this.username, 'oldPassword': this.oldPassword, 'newPassword': this.newPassword}).then(res => {
 				console.log(res)
 				const id = uni.getStorageSync('id')
 				uni.setStorageSync('userType', res.userType)
