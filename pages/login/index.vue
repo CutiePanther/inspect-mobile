@@ -19,6 +19,7 @@
 </template>
 
 <script>
+const CryptoJS = require('crypto-js')
 export default {
 	data() {
 		return {
@@ -28,17 +29,33 @@ export default {
 	},
 
 	methods: {
-		submit() {
+		encrypt(word) {
+			let srcs = CryptoJS.enc.Utf8.parse(word)
+			let encrypted = CryptoJS.AES.encrypt(srcs, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
+			return encrypted.ciphertext.toString().toUpperCase()
+		},
+		async submit() {
 			if(!this.$u.test.mobile(this.username)) {
 				this.$u.toast('手机号填写错误')
 				return false
 			}
-			this.$u.api.login({'username': this.username, 'password': this.password}).then(res => {
-				console.log(res)
-				const id = uni.getStorageSync('id')
-				uni.setStorageSync('userType', res.userType)
-				uni.setStorageSync('userInfo', res)
-				this.$u.route('/', {id})
+			const keyStr = await this.$u.api.getPublicKey(this.username)
+			const key = CryptoJS.enc.Utf8.parse(keyStr);
+			const iv = '0123456789ABCDEF'
+			const encryptedData = CryptoJS.AES.encrypt(this.password, key, {
+				iv: CryptoJS.enc.Utf8.parse(iv),
+				mode: CryptoJS.mode.CBC,
+				padding: CryptoJS.pad.Pkcs7
+			})
+			const encryptedStr = encryptedData.toString();
+			console.log(encryptedStr)
+			this.$u.api.login({'username': this.username, 'password': encryptedStr}).then(res => {
+				if(res) {
+					const id = uni.getStorageSync('id')
+					uni.setStorageSync('userType', res.userType)
+					uni.setStorageSync('userInfo', res)
+					this.$u.route('/', {id})
+				}
 			})
 		}
 	}

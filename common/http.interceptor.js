@@ -42,7 +42,7 @@ const install = (Vue, vm) => {
 			return res.data;  
 		} else if (res.code === 808) {
 			// 跳转到修改密码
-			vm.$u.route('/password', {'user': res.data.userName})
+			vm.$u.route('/pages/login/password', {'user': res.data.userName})
 		}else {
 			// 400 用户名密码错误
 			vm.$u.toast(res.errMsg);

@@ -64,25 +64,26 @@ class Request {
 						}
 					}
 					else if (response.statusCode == 401) {
-						if(response.errMsg) {
-							uni.showModal({
-								title: response.errMsg
-							});
-						}
+						const id = uni.getStorageSync('id')
 						uni.removeStorageSync('userType') // 清除用户登录状态
-						uni.removeStorageSync('userInfo') // 清除用户登录状态
-						this.$u.route({
-							url: '/',
-							type: 'reLaunch',
-							params: {
-								id: uni.getStorageSync('id')
-							}
-						})
+						uni.removeStorageSync('userInfo')
+						if(response.errMsg) {
+							uni.showToast({
+								icon: 'none',
+								title: '无访问权限，请重新登录',
+								duration: 2000
+							})
+						}
+						setTimeout(() => {
+							uni.reLaunch({
+							    url: `/?id=${id}`
+							})
+						}, 2000)
 					}
 					else {
 						// 不返回原始数据的情况下，服务器状态码不为200，modal弹框提示
 						// if(response.errMsg) {
-						// 	uni.showModal({
+						// 	uni.uni.showToast({
 						// 		title: response.errMsg
 						// 	});
 						// }

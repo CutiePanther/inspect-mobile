@@ -40,12 +40,11 @@ export default {
 				this.$u.toast('两次输入不一致')
 				return false
 			}
-			this.$u.api.settingPassword({'username': this.username, 'oldPassword': this.oldPassword, 'newPassword': this.newPassword}).then(res => {
+			this.$u.api.settingPassword({'userName': this.username, 'password': this.oldPassword, 'newPassword': this.newPassword}).then(res => {
 				console.log(res)
-				const id = uni.getStorageSync('id')
-				uni.setStorageSync('userType', res.userType)
-				uni.setStorageSync('userInfo', res)
-				this.$u.route('/', {id})
+				// 重新登录
+				this.$u.toast('修改成功，请重新登录')
+				setTimeout(() => this.$u.route('pages/login/index'), 2000)
 			})
 		}
 	}
