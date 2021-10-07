@@ -40,7 +40,7 @@ const install = (Vue, vm) => {
 		if(res.code == 200) {
 			// 如果把originalData设置为了true，这里return回什么，this.$u.post的then回调中就会得到什么
 			return res.data;  
-		} else if (res.code === 99) {
+		} else if (res.code === 808) {
 			// 跳转到修改密码
 			vm.$u.route('/password', {'user': res.data.userName})
 		}else {

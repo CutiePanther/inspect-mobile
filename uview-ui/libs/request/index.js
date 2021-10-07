@@ -62,7 +62,24 @@ class Request {
 							// 如果不是返回原始数据(originalData=false)，且没有拦截器的情况下，返回纯数据给then回调
 							resolve(response.data);
 						}
-					} else {
+					}
+					else if (response.statusCode == 401) {
+						if(response.errMsg) {
+							uni.showModal({
+								title: response.errMsg
+							});
+						}
+						uni.removeStorageSync('userType') // 清除用户登录状态
+						uni.removeStorageSync('userInfo') // 清除用户登录状态
+						this.$u.route({
+							url: '/',
+							type: 'reLaunch',
+							params: {
+								id: uni.getStorageSync('id')
+							}
+						})
+					}
+					else {
 						// 不返回原始数据的情况下，服务器状态码不为200，modal弹框提示
 						// if(response.errMsg) {
 						// 	uni.showModal({

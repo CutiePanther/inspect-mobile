@@ -1,6 +1,6 @@
 <template>
 	<view class="add-comment">
-		<u-form :rule="rules" :model="form" ref="uForm" class="formList">
+		<u-form :model="form" ref="uForm" class="formList">
 			<u-cell-group>
 				<u-form-item label="商铺名称" label-width="auto" class="formList" prop="m_SignName">
 					<u-input v-model="m_SignName" maxlength="50" :clearable="true" disabled/>
@@ -57,7 +57,7 @@
 					}
 				})
 				let params = {
-					id: this.shopId,
+					marchantId: this.shopId,
 					...this.form,
 					evaPaths
 				}

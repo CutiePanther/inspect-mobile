@@ -75,6 +75,7 @@
 		},
 		data() {
 			return {
+				id: '',
 				logoSrc: require('../../static/img/logo.png'),
 				bannerSrc: require('../../static/img/banner.png'),
 				titleStyle: {
@@ -103,6 +104,13 @@
 					status: 0 // 0正常营业
 				},
 				commentList: []
+			}
+		},
+		onLoad() {
+			let search = location.search
+			let id = search && search.split('=')[1]
+			if (search.indexOf('marchantId') > -1) {
+				location.href = `${location.origin}/h5/#/?id=${id}`
 			}
 		},
 		onShow() {
