@@ -27,13 +27,7 @@ export default {
 			password: ''
 		}
 	},
-
 	methods: {
-		encrypt(word) {
-			let srcs = CryptoJS.enc.Utf8.parse(word)
-			let encrypted = CryptoJS.AES.encrypt(srcs, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 })
-			return encrypted.ciphertext.toString().toUpperCase()
-		},
 		async submit() {
 			if(!this.$u.test.mobile(this.username)) {
 				this.$u.toast('手机号填写错误')

@@ -231,7 +231,6 @@
 				})
 			},
 			submit() {
-				console.log(this.detail)
 				let patrols = []
 				this.detail.patrols.forEach((item, i) => {
 					item.info.forEach((v, j) => {

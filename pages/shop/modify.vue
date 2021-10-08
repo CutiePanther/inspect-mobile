@@ -195,7 +195,6 @@
 					if(item.response) {
 						paths.push(item.response.data)
 					} else {
-						console.log(item.url.split('getImageByte/'))
 						paths.push(item.url.split('getImageByte/')[1])
 					}
 					

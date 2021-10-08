@@ -35,11 +35,9 @@
 				this.recordList = res.pageData
 			},
 			link2detail(item) {
-				console.log(item)
 				this.$u.route('/pages/patrol/detail', {id: item.id})
 			},
 			link2add() {
-				console.log('add')
 				this.$u.route('/pages/patrol/index')
 			}
 		}
