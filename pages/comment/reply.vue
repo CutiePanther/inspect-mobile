@@ -18,7 +18,7 @@
 				<view class="right-info">
 					<view class="user-info">
 						<view class="name">{{ comment.name }}</view>
-						<view class="date">06-25 13:58</view>
+						<view class="date">{{ comment.createTime }}</view>
 					</view>
 					<view class="rate">
 						<span class="shop-rate">商铺评价</span>
@@ -32,7 +32,7 @@
 			<view class="content">{{ comment.evaluation }}</view>
 			<scroll-view scroll-x class="image-list">
 				<image :src="item" mode="widthFix" v-for="(item, index) in comment.evaPaths" :key="index" :lazy-load="true"
-					@click="imgListPreview(item)" class="scroll-view-item"></image>
+					@click="imgListPreview(item, comment.evaPaths)" class="scroll-view-item"></image>
 			</scroll-view>
 		</view>
 	</view>
@@ -57,6 +57,12 @@
 		methods: {
 			link2addComment() {
 				this.$u.route('/pages/comment/add')
+			},
+			imgListPreview(current, urls) {
+				uni.previewImage({
+					urls,
+					current
+				})
 			}
 		}
 	};

@@ -134,6 +134,7 @@
 					uni.setStorageSync('areaMap', areaMap)
 					uni.setStorageSync('scoreRange', scoreRange)
 				}
+				debugger
 				let pages = getCurrentPages()
 				let currentPage = pages[pages.length - 1]
 				const { id } = currentPage.options

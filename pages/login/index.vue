@@ -45,10 +45,15 @@ export default {
 			console.log(encryptedStr)
 			this.$u.api.login({'username': this.username, 'password': encryptedStr}).then(res => {
 				if(res) {
-					const id = uni.getStorageSync('id')
+					const id = res.merchantId || uni.getStorageSync('id')
 					uni.setStorageSync('userType', res.userType)
 					uni.setStorageSync('userInfo', res)
-					this.$u.route('/', {id})
+					this.$u.route({
+						url: '/',
+						type: 'reLaunch',
+						params: { id }
+					})
+					
 				}
 			})
 		}
