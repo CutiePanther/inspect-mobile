@@ -129,7 +129,7 @@
 		},
 		async onShow() {
 			this.shopId = uni.getStorageSync('id')
-			let shop = await this.$u.api.getShopInfo(shopId)
+			let shop = await this.$u.api.getShopInfo(this.shopId)
 			if (shop.paths) {
 				this.shopImgList = shop.paths.map(v => ({ url: `http://123.153.1.134:4399/pic/getImageByte/${v}` }))
 			}
