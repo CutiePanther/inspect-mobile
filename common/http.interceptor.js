@@ -43,6 +43,16 @@ const install = (Vue, vm) => {
 		} else if (res.code === 808) {
 			// 跳转到修改密码
 			vm.$u.route('/pages/login/password', {'user': res.data.userName})
+			return false
+		} else if (res.code === 909) {
+			// 跳转到用户自己的商铺主页
+			let {merchantId} = uni.getStorageSync('userInfo');
+			vm.$u.route({
+				url: '/',
+				type: 'reLaunch',
+				params: {id: merchantId}
+			})
+			return false
 		}else {
 			// 400 用户名密码错误
 			vm.$u.toast(res.errMsg);

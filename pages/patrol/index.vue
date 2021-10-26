@@ -1,7 +1,10 @@
 <template>
 	<view class="content">
 		<view class="patrol-time">
-			<text>{{m_SignName}}: 巡查上报</text>
+			<text class="patrol-header">{{m_SignName}}: 巡查上报</text>
+			<u-button class="add-btn" @tap="addScore">
+				<u-icon name="plus" class="add-icon"></u-icon> 加分
+			</u-button>
 		</view>
 
 		<u-collapse :accordion="false" class="patrol-item">
@@ -268,6 +271,15 @@
 					this.$u.toast('上报成功')
 					setTimeout(() => this.$u.route('/', {id: this.shopId}), 2000)
 				})
+			},
+			addScore() {
+				const params = {
+					merchantId: this.detail.merchantId,
+					template: 2
+				}
+				this.$u.api.addScore(params).then(res => {
+					this.$u.toast('加分成功')
+				})
 			}
 		}
 	}
@@ -288,6 +300,25 @@
 			font-size: 32rpx;
 			font-weight: bold;
 			padding: 16rpx 0 12rpx;
+			display: flex;
+			justify-content: space-between;
+			.patrol-header {
+				flex: 1;
+			}
+			.add-btn {
+				width: 116rpx;
+				height: 44rpx;
+				background: #3296FA;
+				opacity: 0.9;
+				border-radius: 20rpx;
+				line-height: 44rpx;
+				font-size: 24rpx;
+				color: #FFFFFF;
+				text-align: center;
+				.add-icon {
+					margin-right: 4rpx;
+				}
+			}
 		}
 
 		.patrol-item {
